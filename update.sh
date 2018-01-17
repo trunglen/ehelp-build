@@ -1,0 +1,12 @@
+while true; do
+    
+    if [[ $(git pull origin master) == *up-to-date* ]]; 
+    then
+        echo "no change"
+    else
+        echo "detect changes"
+    fi
+    echo "sleep 30s"
+    sleep 30s        
+
+done

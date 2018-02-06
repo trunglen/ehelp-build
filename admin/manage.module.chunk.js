@@ -82,12 +82,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__user_staff_staff_component__ = __webpack_require__("../../../../../src/app/manage/user/staff/staff.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__user_boss_boss_component__ = __webpack_require__("../../../../../src/app/manage/user/boss/boss.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14__report_report_component__ = __webpack_require__("../../../../../src/app/manage/report/report.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__order_order_component__ = __webpack_require__("../../../../../src/app/manage/order/order.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__manage_service__ = __webpack_require__("../../../../../src/app/manage/manage.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -123,15 +127,55 @@ var ManageModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_10__user_admin_admin_component__["a" /* AdminComponent */],
                 __WEBPACK_IMPORTED_MODULE_12__user_staff_staff_component__["a" /* StaffComponent */],
                 __WEBPACK_IMPORTED_MODULE_13__user_boss_boss_component__["a" /* BossComponent */],
-                __WEBPACK_IMPORTED_MODULE_14__report_report_component__["a" /* ReportComponent */]
+                __WEBPACK_IMPORTED_MODULE_14__report_report_component__["a" /* ReportComponent */],
+                __WEBPACK_IMPORTED_MODULE_15__order_order_component__["a" /* OrderComponent */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_8__service_srv_service__["a" /* SrvService */],
-                __WEBPACK_IMPORTED_MODULE_11__user_user_service__["a" /* UserService */]
+                __WEBPACK_IMPORTED_MODULE_11__user_user_service__["a" /* UserService */],
+                __WEBPACK_IMPORTED_MODULE_16__manage_service__["a" /* ManageService */]
             ]
         })
     ], ManageModule);
     return ManageModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/manage/manage.service.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ManageService; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__x_http__ = __webpack_require__("../../../../../src/x/http.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_constant__ = __webpack_require__("../../../../../src/app/common/constant.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+var ManageService = (function () {
+    function ManageService(httpApi) {
+        this.httpApi = httpApi;
+    }
+    ManageService.prototype.getOrderHistory = function () {
+        return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_2__common_constant__["a" /* ApplicationApiResource */].getOrderHistory, null, true);
+    };
+    ManageService = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__x_http__["a" /* HttpApi */]])
+    ], ManageService);
+    return ManageService;
 }());
 
 
@@ -153,12 +197,14 @@ var ManageModule = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__user_staff_staff_component__ = __webpack_require__("../../../../../src/app/manage/user/staff/staff.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__user_boss_boss_component__ = __webpack_require__("../../../../../src/app/manage/user/boss/boss.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__report_report_component__ = __webpack_require__("../../../../../src/app/manage/report/report.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__order_order_component__ = __webpack_require__("../../../../../src/app/manage/order/order.component.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -179,6 +225,7 @@ var routes = [
             { path: 'user/staff', component: __WEBPACK_IMPORTED_MODULE_7__user_staff_staff_component__["a" /* StaffComponent */] },
             { path: 'user/boss', component: __WEBPACK_IMPORTED_MODULE_8__user_boss_boss_component__["a" /* BossComponent */] },
             { path: 'report', component: __WEBPACK_IMPORTED_MODULE_9__report_report_component__["a" /* ReportComponent */] },
+            { path: 'order-history', component: __WEBPACK_IMPORTED_MODULE_10__order_order_component__["a" /* OrderComponent */] },
         ],
         canActivate: [__WEBPACK_IMPORTED_MODULE_6__shared_services_auth_guard_service__["a" /* AuthGuard */]]
     },
@@ -193,6 +240,76 @@ var ManageRoutingModule = (function () {
         })
     ], ManageRoutingModule);
     return ManageRoutingModule;
+}());
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/manage/order/order.component.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/manage/order/order.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<div class=\"col-md-12\">\n  <div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Lịch sử đơn hàng</div>\n    <div class=\"panel-body\">\n    \n      <table class=\"table table-hover\">\n        <thead>\n          <tr>\n            <th>Tên công cụ</th>\n            <th>Khách hàng</th>\n            <th>Người giúp việc</th>\n            <th>Trạng thái</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let o of orderHistory | paginate: { itemsPerPage: 15, currentPage: p}\">\n            <td>{{o.created_at *1000 |date}}</td>\n            <td>{{o.user_id}}</td>\n            <td>\n            </td>\n            <td>\n              {{o.item_status}}\n            </td>\n            <td>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n      <div class=\"row text-center\">\n        <pagination-controls (pageChange)=\"p = $event\"></pagination-controls>          \n      </div>\n    </div>\n  </div>\n\n</div>"
+
+/***/ }),
+
+/***/ "../../../../../src/app/manage/order/order.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return OrderComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manage_service__ = __webpack_require__("../../../../../src/app/manage/manage.service.ts");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var OrderComponent = (function () {
+    function OrderComponent(manageService) {
+        this.manageService = manageService;
+        this.p = 1;
+        this.orderHistory = [];
+    }
+    OrderComponent.prototype.ngOnInit = function () {
+        var _this = this;
+        this.manageService.getOrderHistory().subscribe(function (res) {
+            _this.orderHistory = res;
+        });
+    };
+    OrderComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-order',
+            template: __webpack_require__("../../../../../src/app/manage/order/order.component.html"),
+            styles: [__webpack_require__("../../../../../src/app/manage/order/order.component.css")]
+        }),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__manage_service__["a" /* ManageService */]])
+    ], OrderComponent);
+    return OrderComponent;
 }());
 
 
@@ -329,7 +446,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/service/service.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container\">\n  <div class=\"col-md-12\">\n    <div class=\"panel panel-primary\">\n      <div class=\"panel-heading\">Công cụ hỗ trợ</div>\n      <div class=\"panel-body\">\n        <form #f1=\"ngForm\">\n          <div class=\"form-group\">\n            <label for=\"email\">Tên công cụ:</label>\n            <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\" required>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Giá:</label>\n            <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price\" required>\n          </div>\n          <button type=\"button\" (click)=\"onCreateTool(f1)\" class=\"btn btn-primary\" [disabled]=\"!f1.valid\">Thêm công cụ</button>\n        </form>\n\n        <table class=\"table table-hover\">\n          <thead>\n            <tr>\n              <th>Tên công cụ</th>\n              <th>Giá</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr *ngFor=\"let t of tools\">\n              <td>{{t.name}}</td>\n              <td>{{t.price}}</td>\n              <td>\n                <button class=\"btn btn-danger\" (click)=\"onDeleteTool(t.id)\">Xóa</button>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n      </div>\n    </div>\n\n  </div>\n  <div class=\"col-md-12\">\n    <div class=\"panel panel-primary\">\n      <div class=\"panel-heading\">Dịch vụ</div>\n      <div class=\"panel-body\">\n        <form #f2=\"ngForm\">\n          <div class=\"form-group\">\n            <label for=\"email\">Tên dịch vụ</label>\n            <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Giá theo giờ</label>\n            <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price_per_hour\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Nhiệm vụ</label>\n            <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n            <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Công cụ</label>\n            <br/>\n            <mat-form-field>\n              <mat-select placeholder=\"Chọn công cụ cho dịch vụ\" [formControl]=\"selectedTools\" multiple>\n                <mat-option *ngFor=\"let t of tools\" [value]=\"t\">{{t.name}}</mat-option>\n              </mat-select>\n            </mat-form-field>\n          </div>\n          <button type=\"button\" (click)=\"onCreateService(f2)\" class=\"btn btn-primary\">Thêm dịch vụ</button>\n        </form>\n\n        <table class=\"table table-hover\">\n          <thead>\n            <tr>\n              <th>Tên dịch vụ</th>\n              <th>Gía theo giờ</th>\n              <th>Công cụ</th>\n              <th>Nhiệm vụ</th>              \n            </tr>\n          </thead>\n          <tbody>\n            <tr *ngFor=\"let s of services\">\n              <td>{{s.name}}</td>\n              <td>{{s.price_per_hour}}</td>\n              <td>\n                <span class=\"badge\" *ngFor=\"let s of s.tools\">{{s}}</span>\n              </td>\n              <td>\n                <span class=\"badge\" *ngFor=\"let n of s.node_services\">{{n}}</span>\n              </td>\n              <td>\n                <button class=\"btn btn-danger\" (click)=\"onDeleteService(s.id)\">Xóa</button>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n\n      </div>\n    </div>\n  </div>\n</div>"
+module.exports = "<div class=\"container\">\n  <div class=\"col-md-12\">\n    <div class=\"panel panel-primary\">\n      <div class=\"panel-heading\">Công cụ hỗ trợ</div>\n      <div class=\"panel-body\">\n        <form #f1=\"ngForm\">\n          <div class=\"form-group\">\n            <label for=\"email\">Tên công cụ:</label>\n            <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\" required>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Giá:</label>\n            <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price\" required>\n          </div>\n          <button type=\"button\" (click)=\"onCreateTool(f1)\" class=\"btn btn-primary\" [disabled]=\"!f1.valid\">Thêm công cụ</button>\n        </form>\n\n        <table class=\"table table-hover\">\n          <thead>\n            <tr>\n              <th>Tên công cụ</th>\n              <th>Giá</th>\n            </tr>\n          </thead>\n          <tbody>\n            <tr *ngFor=\"let t of tools | paginate: { itemsPerPage: 5, currentPage: pTool}\">\n              <td>{{t.name}}</td>\n              <td>{{t.price}}</td>\n              <td>\n                <button class=\"btn btn-danger\" (click)=\"onDeleteTool(t.id)\">Xóa</button>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n        <div class=\"row text-center\">\n          <pagination-controls (pageChange)=\"pTool = $event\"></pagination-controls>          \n        </div>\n      </div>\n    </div>\n\n  </div>\n  <div class=\"col-md-12\">\n    <div class=\"panel panel-primary\">\n      <div class=\"panel-heading\">Dịch vụ</div>\n      <div class=\"panel-body\">\n        <form #f2=\"ngForm\">\n          <div class=\"form-group\">\n            <label for=\"email\">Tên dịch vụ</label>\n            <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Giá theo giờ</label>\n            <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price_per_hour\">\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Nhiệm vụ</label>\n            <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n            <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n          </div>\n          <div class=\"form-group\">\n            <label for=\"pwd\">Công cụ</label>\n            <br/>\n            <mat-form-field>\n              <mat-select placeholder=\"Chọn công cụ cho dịch vụ\" [formControl]=\"selectedTools\" multiple>\n                <mat-option *ngFor=\"let t of tools\" [value]=\"t\">{{t.name}}</mat-option>\n              </mat-select>\n            </mat-form-field>\n          </div>\n          <button type=\"button\" (click)=\"onCreateService(f2)\" class=\"btn btn-primary\">Thêm dịch vụ</button>\n        </form>\n\n        <table class=\"table table-hover\">\n          <thead>\n            <tr>\n              <th>Tên dịch vụ</th>\n              <th>Gía theo giờ</th>\n              <th>Công cụ</th>\n              <th>Nhiệm vụ</th>              \n            </tr>\n          </thead>\n          <tbody>\n            <tr *ngFor=\"let s of services | paginate: { itemsPerPage: 5, currentPage: pService }\">\n              <td>{{s.name}}</td>\n              <td>{{s.price_per_hour}}</td>\n              <td>\n                <span class=\"badge\" *ngFor=\"let s of s.tools\">{{s}}</span>\n              </td>\n              <td>\n                <span class=\"badge\" *ngFor=\"let n of s.node_services\">{{n}}</span>\n              </td>\n              <td>\n                <button class=\"btn btn-danger\" (click)=\"onDeleteService(s.id)\">Xóa</button>\n              </td>\n            </tr>\n          </tbody>\n        </table>\n        <div class=\"row text-center\">\n          <pagination-controls (pageChange)=\"pService = $event\"></pagination-controls>          \n        </div>\n      </div>\n    </div>\n  </div>\n</div>"
 
 /***/ }),
 
@@ -360,6 +477,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ServiceComponent = (function () {
     function ServiceComponent(srvService) {
         this.srvService = srvService;
+        this.pService = 1;
+        this.pTool = 1;
         this.services = [];
         this.displayServices = [];
         this.nodeService = [];
@@ -396,9 +515,10 @@ var ServiceComponent = (function () {
         var name = selected.map(function (res) {
             return res['name'];
         });
-        console.log(value.tools);
+        value.node_services = this.nodeService;
         this.srvService.createService(value).subscribe(function (res) {
             res.tools = name;
+            res.node_services = _this.nodeService;
             _this.services.push(res);
         });
     };

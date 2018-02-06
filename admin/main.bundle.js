@@ -252,6 +252,7 @@ var ApplicationApiResource = {
     createTool: createUrl('admin/service/tool/create'),
     createService: createUrl('admin/service/create'),
     deleteService: createUrl('admin/service/delete'),
+    getOrderHistory: createUrl('admin/order-history'),
     deleteTool: createUrl('admin/service/tool/delete'),
 };
 
@@ -513,30 +514,9 @@ var LeftMenuComponent = (function () {
                 ]
             },
             {
-                label: 'Help',
-                icon: 'fa-question',
-                items: [
-                    {
-                        label: 'Contents'
-                    },
-                    {
-                        label: 'Search',
-                        icon: 'fa-search',
-                        items: [
-                            {
-                                label: 'Text',
-                                items: [
-                                    {
-                                        label: 'Workspace'
-                                    }
-                                ]
-                            },
-                            {
-                                label: 'File'
-                            }
-                        ]
-                    }
-                ]
+                label: 'Theo dõi đơn hàng',
+                icon: 'fa-sticky-note',
+                routerLink: 'order-history'
             },
             {
                 label: 'Actions',
@@ -1061,12 +1041,14 @@ var AuthGuard = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__ = __webpack_require__("../../../../../src/app/shared/alert/alert.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__page_not_found_page_not_found_component__ = __webpack_require__("../../../../../src/app/shared/page-not-found/page-not-found.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__ = __webpack_require__("../../../../ng2-smart-table/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__ = __webpack_require__("../../../../ngx-pagination/dist/ngx-pagination.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -1095,7 +1077,8 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ChartModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ProgressBarModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ChartModule"],
-                __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */]
+                __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */],
+                __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__["a" /* NgxPaginationModule */]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */],
@@ -1115,7 +1098,8 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_7__page_not_found_page_not_found_component__["a" /* PageNotFoundComponent */],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ProgressBarModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ChartModule"],
-                __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */]
+                __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */],
+                __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__["a" /* NgxPaginationModule */]
             ],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */]
@@ -1413,8 +1397,7 @@ var HttpApi = (function () {
         this.spinnerService.startLoading();
         var requestOption = {};
         if (authReq) {
-            var headers = {};
-            headers.set('Authorization', "" + 'Bearer ' + sessionStorage.getItem(__WEBPACK_IMPORTED_MODULE_9__app_common_constant__["b" /* ApplicationStorage */].accessTokenStorage));
+            var headers = new __WEBPACK_IMPORTED_MODULE_2__angular_http__["a" /* Headers */]({ Authorization: "" + 'Bearer ' + sessionStorage.getItem(__WEBPACK_IMPORTED_MODULE_9__app_common_constant__["b" /* ApplicationStorage */].accessTokenStorage) });
             requestOption.headers = headers;
         }
         return this.http.post(endPoint, body, requestOption)

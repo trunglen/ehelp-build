@@ -35,7 +35,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 exports.i(__webpack_require__("../../../../css-loader/index.js?{\"sourceMap\":false,\"importLoaders\":1}!../../../../postcss-loader/lib/index.js?{\"ident\":\"postcss\",\"sourceMap\":false}!../../../material/prebuilt-themes/indigo-pink.css"), "");
 
 // module
-exports.push([module.i, "/* You can add global styles to this file, and also import other style files */\n.ui-panelmenu-header {\n    background: red;\n}\n.ui-menuitem{\n    font-size: 16px;\n}", ""]);
+exports.push([module.i, "/* You can add global styles to this file, and also import other style files */\n.ui-panelmenu-header {\n    background: red;\n}\n.ui-menuitem{\n    font-size: 16px;\n}\n@-webkit-keyframes ui-progress-spinner-color {\n    100%,\n    0% {\n        stroke: #d62d20;\n    }\n    40% {\n        stroke: #0057e7;\n    }\n    66% {\n        stroke: #008744;\n    }\n    80%,\n    90% {\n        stroke: #ffa700;\n    }\n}\n@keyframes ui-progress-spinner-color {\n    100%,\n    0% {\n        stroke: #d62d20;\n    }\n    40% {\n        stroke: #0057e7;\n    }\n    66% {\n        stroke: #008744;\n    }\n    80%,\n    90% {\n        stroke: #ffa700;\n    }\n}\n.ui-progress-spinner{\n    z-index: 1000;\n    position: fixed;\n    top: 50%;\n    left: 50%;\n}", ""]);
 
 // exports
 

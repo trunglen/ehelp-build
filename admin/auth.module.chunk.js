@@ -95,6 +95,7 @@ var AuthModule = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_add_operator_map__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/map.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_catch__ = __webpack_require__("../../../../rxjs/_esm5/add/operator/catch.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__x_http__ = __webpack_require__("../../../../../src/x/http.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_constant__ = __webpack_require__("../../../../../src/app/common/constant.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -108,20 +109,21 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var AuthService = (function () {
     function AuthService(httpApi) {
         this.httpApi = httpApi;
     }
     AuthService.prototype.checkSuperAdmin = function () {
-        return this.httpApi.Get('admin/super_admin');
+        return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].checkSuperAdmin);
     };
     AuthService.prototype.registerSuperAdmin = function (loginInfor) {
         loginInfor.role = 'super-admin';
-        return this.httpApi.Post('admin/register', loginInfor);
+        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].registerSuperAdmin, loginInfor);
     };
     AuthService.prototype.login = function (loginInfor) {
         loginInfor.role = 'admin';
-        return this.httpApi.Post('admin/signin', loginInfor);
+        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].login, loginInfor);
     };
     AuthService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
@@ -155,7 +157,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/auth/signin/signin.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'>\n<div id=\"wrapper\">\n  <div class=\"login-form\">\n    <form (ngSubmit)=\"onSignin(f)\" #f=\"ngForm\">\n      <h1>Ehelp</h1>\n      <div class=\"form-group\" *ngIf=\"isRegister\">\n        <input type=\"text\" class=\"form-control\" placeholder=\"Nhập tên\" id=\"UserName\" ngModel name=\"name\">\n        <i class=\"fa fa-user\"></i>\n      </div>\n      <div class=\"form-group \">\n        <input type=\"text\" class=\"form-control\" placeholder=\"Nhập tên đăng nhập \" id=\"UserName\" ngModel name=\"uname\">\n        <i class=\"fa fa-user\"></i>\n      </div>\n      <div class=\"form-group log-status\">\n        <input type=\"password\" class=\"form-control\" placeholder=\"Nhập mật khẩu\" id=\"Passwod\" ngModel name=\"password\">\n        <i class=\"fa fa-lock\"></i>\n      </div>\n\n      <span class=\"alert\">Sai thông tin đăng nhập</span>\n      <button type=\"submit\" class=\"log-btn\">{{isRegister?\"Đăng kí\":\"Đăng nhập\"}}</button>\n    </form>\n  </div>\n</div>"
+module.exports = "<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css'>\n<div id=\"wrapper\">\n  <div class=\"login-form\">\n    <form (ngSubmit)=\"onSignin(f)\" #f=\"ngForm\">\n      <h1>Ehelp</h1>\n      <div class=\"form-group\" *ngIf=\"isRegister\">\n        <input type=\"text\" class=\"form-control\" placeholder=\"Nhập tên\" id=\"UserName\" ngModel name=\"name\">\n        <i class=\"fa fa-user\"></i>\n      </div>\n      <div class=\"form-group \">\n        <input type=\"text\" class=\"form-control\" placeholder=\"Nhập tên đăng nhập \" id=\"UserName\" ngModel name=\"uname\">\n        <i class=\"fa fa-user\"></i>\n      </div>\n      <div class=\"form-group log-status\">\n        <input type=\"password\" class=\"form-control\" placeholder=\"Nhập mật khẩu\" id=\"Passwod\" ngModel name=\"password\">\n        <i class=\"fa fa-lock\"></i>\n      </div>\n\n      <span class=\"alert\">Sai thông tin đăng nhập</span>\n      <button type=\"submit\" class=\"log-btn\">{{isRegister?\"Đăng kí\":\"Đăng nhập\"}}</button>\n    </form>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -169,6 +171,17 @@ module.exports = "<link rel='stylesheet prefetch' href='http://maxcdn.bootstrapc
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__auth_service__ = __webpack_require__("../../../../../src/app/auth/auth.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__x_storage__ = __webpack_require__("../../../../../src/x/storage.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__("../../../router/esm5/router.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__shared_base_component__ = __webpack_require__("../../../../../src/app/shared/base.component.ts");
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -183,39 +196,52 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
-var SigninComponent = (function () {
+
+var SigninComponent = (function (_super) {
+    __extends(SigninComponent, _super);
     function SigninComponent(authService, alertService, router, activedRoute) {
-        this.authService = authService;
-        this.alertService = alertService;
-        this.router = router;
-        this.activedRoute = activedRoute;
-        this.sessionStorage = __WEBPACK_IMPORTED_MODULE_3__x_storage__["b" /* StorageFactory */].getStorage(__WEBPACK_IMPORTED_MODULE_3__x_storage__["a" /* SESSION */]);
-        this.isRegister = false;
+        var _this = _super.call(this) || this;
+        _this.authService = authService;
+        _this.alertService = alertService;
+        _this.router = router;
+        _this.activedRoute = activedRoute;
+        _this.sessionStorage = __WEBPACK_IMPORTED_MODULE_3__x_storage__["b" /* StorageFactory */].getStorage(__WEBPACK_IMPORTED_MODULE_3__x_storage__["a" /* SESSION */]);
+        _this.isRegister = false;
+        _this.count = 0;
+        _this.param = 3;
+        return _this;
     }
+    SigninComponent.prototype.ngOnChanges = function (changes) {
+        console.log('changed');
+    };
     SigninComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.authService.checkSuperAdmin().subscribe(function (res) {
             _this.isRegister = Object.keys(res).length === 0 && res.constructor === Object;
         }, function (err) { return console.log(err); });
+        for (var i = 0; i <= 15; i++) {
+            setTimeout(function () {
+                _this.count++;
+            }, 3000);
+        }
+    };
+    SigninComponent.prototype.ngAfterViewInit = function () {
+        console.log('auth ngAfterViewInit');
     };
     SigninComponent.prototype.onSignin = function (f) {
         var _this = this;
+        this.param++;
         var value = f.value;
         if (this.isRegister) {
             this.authService.registerSuperAdmin(value).subscribe(function (res) {
-                _this.sessionStorage.setItem('token', res.access_token);
+                _this.sessionStorage.setItem('access_token', res.access_token);
                 _this.router.navigate(['/manage/user/staff'], { relativeTo: _this.activedRoute });
-            }, function (err) {
-                console.log(err);
             });
         }
         else {
             this.authService.login(value).subscribe(function (res) {
-                console.log(res);
-                _this.sessionStorage.setItem('token', res.access_token);
+                _this.sessionStorage.setItem('access_token', res.access_token);
                 _this.router.navigate(['/manage/user/staff'], { relativeTo: _this.activedRoute });
-            }, function (err) {
-                console.log(err);
             });
         }
     };
@@ -231,6 +257,27 @@ var SigninComponent = (function () {
             __WEBPACK_IMPORTED_MODULE_4__angular_router__["ActivatedRoute"]])
     ], SigninComponent);
     return SigninComponent;
+}(__WEBPACK_IMPORTED_MODULE_5__shared_base_component__["a" /* BaseComponent */]));
+
+
+
+/***/ }),
+
+/***/ "../../../../../src/app/shared/base.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return BaseComponent; });
+var BaseComponent = (function () {
+    function BaseComponent() {
+    }
+    BaseComponent.prototype.ngAfterViewInit = function () {
+        this.spinnerService.stopLoading();
+    };
+    BaseComponent.prototype.ngOnInit = function () {
+        console.log('app init');
+    };
+    return BaseComponent;
 }());
 
 

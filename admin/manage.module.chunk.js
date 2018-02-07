@@ -276,7 +276,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/order/order.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-md-12\">\n  <div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Lịch sử đơn hàng</div>\n    <div class=\"panel-body\">\n    \n      <table class=\"table table-hover\">\n        <thead>\n          <tr>\n            <th>Tên công cụ</th>\n            <th>Khách hàng</th>\n            <th>Người giúp việc</th>\n            <th>Trạng thái</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let o of orderHistory | paginate: { itemsPerPage: 15, currentPage: p}\">\n            <td>{{o.created_at *1000 |date}}</td>\n            <td>{{o.user_id}}</td>\n            <td>\n            </td>\n            <td>\n              {{o.item_status}}\n            </td>\n            <td>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n      <div class=\"row text-center\">\n        <pagination-controls (pageChange)=\"p = $event\"></pagination-controls>          \n      </div>\n    </div>\n  </div>\n\n</div>"
+module.exports = "<div class=\"col-md-12\">\n  <div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Lịch sử đơn hàng</div>\n    <div class=\"panel-body\">\n\n      <table class=\"table table-hover\">\n        <thead>\n          <tr>\n            <th>Ngày tạo</th>\n            <th>Khách hàng</th>\n            <th>Người giúp việc</th>\n            <th>Thời gian làm</th>\n            <th>Chi phí</th>\n            <th>Trạng thái</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let o of orderHistory | paginate: { itemsPerPage: 15, currentPage: p}\">\n            <td>{{o.created_at *1000 |date}}</td>\n            <td>{{o.customer}} - {{o.customer_phone}}</td>\n            <td>{{o.employee}} - {{o.employee_phone}}</td>\n            <td>{{o.hour_day}}</td>\n            <td>{{o.money_day}}</td>\n            <td>{{o.status}}</td>\n          </tr>\n        </tbody>\n      </table>\n      <div class=\"row text-center\">\n        <pagination-controls (pageChange)=\"p = $event\"></pagination-controls>\n      </div>\n    </div>\n  </div>\n\n</div>"
 
 /***/ }),
 
@@ -474,10 +474,12 @@ var ServiceFrmComponent = (function () {
                 _this.tools = res;
                 _this.tools.forEach(function (v, k) {
                     _this.displayTool.push({ label: v.name, value: v });
-                    if (_this.service.tools.filter(function (tool) { return tool === v.name; })) {
-                        _this.selectedTool.push(v);
-                    }
                 });
+                if (_this.service.tools) {
+                    _this.selectedTool = _this.tools.filter(function (t) {
+                        return _this.service.tools.find(function (tool) { return tool === t.name; }) != null;
+                    });
+                }
             }
         });
     };
@@ -990,6 +992,16 @@ var BossComponent = (function () {
             _this.display = false;
         });
     };
+    BossComponent.prototype.onActive = function (b) {
+        this.userService.activeCustomer(b.id).subscribe(function (res) {
+            b.is_active = true;
+        });
+    };
+    BossComponent.prototype.onDeactive = function (b) {
+        this.userService.deactiveCustomer(b.id).subscribe(function (res) {
+            b.is_active = false;
+        });
+    };
     BossComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["Component"])({
             selector: 'app-boss',
@@ -1216,6 +1228,12 @@ var UserService = (function () {
     };
     UserService.prototype.deactiveEmployee = function (id) {
         return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].deactiveEmployee, { id: id }, true);
+    };
+    UserService.prototype.activeCustomer = function (id) {
+        return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].activeCustomer, { id: id }, true);
+    };
+    UserService.prototype.deactiveCustomer = function (id) {
+        return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].deactiveCustomer, { id: id }, true);
     };
     UserService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Injectable"])(),

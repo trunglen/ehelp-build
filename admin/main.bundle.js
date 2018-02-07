@@ -234,9 +234,9 @@ var ApplicationApiResource = {
     // customer & employee
     getCustomers: createUrl('admin/user/customer/list'),
     updateCustomer: createUrl('admin/user/customer/update'),
-    activeEmployee: createUrl('admin/user/customer/active'),
     deactiveCustomer: createUrl('admin/user/customer/deactive'),
-    activeCustomer: createUrl('admin/user/employee/active'),
+    activeCustomer: createUrl('admin/user/customer/active'),
+    activeEmployee: createUrl('admin/user/employee/active'),
     deactiveEmployee: createUrl('admin/user/employee/deactive'),
     getEmployees: createUrl('admin/user/employee/list'),
     updateEmployee: createUrl('admin/user/employee/update'),
@@ -248,7 +248,7 @@ var ApplicationApiResource = {
     updateTool: createUrl('admin/service/tool/update'),
     updateService: createUrl('admin/service/update'),
     deleteService: createUrl('admin/service/delete'),
-    getOrderHistory: createUrl('admin/order-history'),
+    getOrderHistory: createUrl('admin/report/order-history'),
     deleteTool: createUrl('admin/service/tool/delete'),
 };
 

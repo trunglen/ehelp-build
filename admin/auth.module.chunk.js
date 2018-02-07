@@ -235,13 +235,13 @@ var SigninComponent = (function (_super) {
         if (this.isRegister) {
             this.authService.registerSuperAdmin(value).subscribe(function (res) {
                 _this.sessionStorage.setItem('access_token', res.access_token);
-                _this.router.navigate(['/manage/user/staff'], { relativeTo: _this.activedRoute });
+                _this.router.navigate(['/manage/report'], { relativeTo: _this.activedRoute });
             });
         }
         else {
             this.authService.login(value).subscribe(function (res) {
                 _this.sessionStorage.setItem('access_token', res.access_token);
-                _this.router.navigate(['/manage/user/staff'], { relativeTo: _this.activedRoute });
+                _this.router.navigate(['/manage/report'], { relativeTo: _this.activedRoute });
             });
         }
     };

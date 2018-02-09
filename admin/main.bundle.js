@@ -86,7 +86,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<p-progressBar mode=\"indeterminate\" *ngIf=\"showLoading\" [style]=\"{'height': '6px'}\"></p-progressBar>\n<router-outlet></router-outlet>\n<p-growl [value]=\"objToaster\"></p-growl>"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<p-progressBar mode=\"indeterminate\" *ngIf=\"showLoading\" [style]=\"{'height': '6px'}\"></p-progressBar>\n<router-outlet></router-outlet>\n<p-growl [(value)]=\"msgs\"></p-growl>"
 
 /***/ }),
 
@@ -96,7 +96,10 @@ module.exports = "<!--The content below is only a placeholder and can be replace
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__x_spinner_serice__ = __webpack_require__("../../../../../src/app/x/spinner.serice.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_alert_service__ = __webpack_require__("../../../../../src/app/shared/alert.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__x_spinner_serice__ = __webpack_require__("../../../../../src/app/x/spinner.serice.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_primeng_components_common_messageservice__ = __webpack_require__("../../../../primeng/components/common/messageservice.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_primeng_components_common_messageservice___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_primeng_components_common_messageservice__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -108,18 +111,26 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 
 
+
+
 var AppComponent = (function () {
-    function AppComponent(spinnerService) {
+    function AppComponent(spinnerService, alertService, messageService) {
         this.spinnerService = spinnerService;
+        this.alertService = alertService;
+        this.messageService = messageService;
         this.title = 'app';
         this.showLoading = false;
-        this.objToaster = [];
     }
     AppComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.spinnerService.showLoading.subscribe(function (res) {
             _this.showLoading = res;
         });
+        this.alertService.toasterStatus.subscribe(function (res) {
+            _this.messageService.add(res);
+        });
+    };
+    AppComponent.prototype.ngAfterViewInit = function () {
     };
     AppComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -127,7 +138,9 @@ var AppComponent = (function () {
             template: __webpack_require__("../../../../../src/app/app.component.html"),
             styles: [__webpack_require__("../../../../../src/app/app.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__x_spinner_serice__["a" /* SpinnerService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__x_spinner_serice__["a" /* SpinnerService */],
+            __WEBPACK_IMPORTED_MODULE_1__shared_alert_service__["a" /* AlertService */],
+            __WEBPACK_IMPORTED_MODULE_3_primeng_components_common_messageservice__["MessageService"]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -215,6 +228,7 @@ var AppModule = (function () {
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ApplicationStorage; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ApplicationApiResource; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return StaticResource; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__environments_environment__ = __webpack_require__("../../../../../src/environments/environment.ts");
 
 var ApplicationStorage = {
@@ -237,9 +251,12 @@ var ApplicationApiResource = {
     deactiveCustomer: createUrl('admin/user/customer/deactive'),
     activeCustomer: createUrl('admin/user/customer/active'),
     activeEmployee: createUrl('admin/user/employee/active'),
+    createEmployee: createUrl('admin/user/employee/create'),
     deactiveEmployee: createUrl('admin/user/employee/deactive'),
     getEmployees: createUrl('admin/user/employee/list'),
     updateEmployee: createUrl('admin/user/employee/update'),
+    uploadAvatar: createUrl('admin/user/employee/avatar'),
+    uploadCertificate: createUrl('admin/user/employee/certificate'),
     // tool and service
     getTools: createUrl('admin/service/tool/list'),
     getServices: createUrl('admin/service/list-tool'),
@@ -250,6 +267,10 @@ var ApplicationApiResource = {
     deleteService: createUrl('admin/service/delete'),
     getOrderHistory: createUrl('admin/report/order-history'),
     deleteTool: createUrl('admin/service/tool/delete'),
+};
+var StaticResource = {
+    avatar: __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].staticURL + "avatar/",
+    certificate: __WEBPACK_IMPORTED_MODULE_0__environments_environment__["a" /* environment */].staticURL + "certificate/"
 };
 
 
@@ -900,7 +921,11 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */],
                 __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__["a" /* NgxPaginationModule */],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["DialogModule"],
-                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["MultiSelectModule"]
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["MultiSelectModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["InputSwitchModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["FileUploadModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["CalendarModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */],
@@ -923,7 +948,11 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__["a" /* Ng2SmartTableModule */],
                 __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__["a" /* NgxPaginationModule */],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["MultiSelectModule"],
-                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["DialogModule"]
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["DialogModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["InputSwitchModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["FileUploadModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["CalendarModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"]
             ],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */]
@@ -1056,7 +1085,7 @@ var SpinnerService = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
 var environment = {
     production: true,
-    baseURL: 'http://163.44.206.108:8080/api/',
+    baseURL: 'http://localhost:8080/api/',
     baseWS: 'ws://163.44.206.108:3000/room/'
 };
 
@@ -1075,6 +1104,7 @@ var environment = {
 var environment = {
     production: false,
     baseURL: 'http://163.44.206.108:8080/api/',
+    staticURL: 'http://163.44.206.108:8080/static/',
     baseWS: 'ws://163.44.206.108:3000/room/'
 };
 
@@ -1178,10 +1208,9 @@ var HttpApi = (function () {
         return this.http.post(endPoint, body, requestOption)
             .map(function (res) { return _this.transformResponse(res); })
             .catch(function (error) {
-            _this.handleError(error);
+            _this.alertService.error('Lỗi', error.json().error);
             return __WEBPACK_IMPORTED_MODULE_3_rxjs_Observable__["a" /* Observable */].throw(error);
-        })
-            .finally(function () {
+        }).finally(function () {
             _this.spinnerService.stopLoading();
         });
     };

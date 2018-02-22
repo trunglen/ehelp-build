@@ -189,6 +189,9 @@ var ManageService = (function () {
     ManageService.prototype.getOrderHistory = function () {
         return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_2__common_constant__["a" /* ApplicationApiResource */].getOrderHistory, null, true);
     };
+    ManageService.prototype.getGeneralHistory = function (types) {
+        return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_2__common_constant__["a" /* ApplicationApiResource */].getGeneralReport, { types: types }, true);
+    };
     ManageService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Injectable"])(),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__x_http__["a" /* HttpApi */]])
@@ -358,7 +361,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/report/report.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<p-panel header=\"Thống kê\">\n  <p-chart type=\"line\" [data]=\"data\" (onDataSelect)=\"selectData($event)\"></p-chart>\n</p-panel>"
+module.exports = "<p-panel header=\"Thống kê\">\n  <div class=\"chart\" *ngIf=\"!isEmptyData\">\n    <p-chart type=\"line\" [data]=\"data\" (onDataSelect)=\"selectData($event)\"></p-chart>\n  </div>\n  <div class=\"alert alert-warning\" *ngIf=\"isEmptyData\">\n      <button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-hidden=\"true\">&times;</button>\n      <strong>Không có dữ liệu</strong> Hiện không có dữ liệu\n  </div>\n  <button class=\"btn btn-primary\" (click)=\"changeReportType('week')\">Tuần hiện tại</button>\n  <button class=\"btn btn-primary\" (click)=\"changeReportType('month')\">Tháng hiện tại</button>\n  <button class=\"btn btn-primary\" (click)=\"changeReportType('year')\">Năm hiện tại</button>\n</p-panel>"
 
 /***/ }),
 
@@ -367,7 +370,12 @@ module.exports = "<p-panel header=\"Thống kê\">\n  <p-chart type=\"line\" [da
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ReportComponent; });
+/* unused harmony export DAY_CHART */
+/* unused harmony export MONTH_CHART */
+/* unused harmony export YEAR_CHART */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__manage_service__ = __webpack_require__("../../../../../src/app/manage/manage.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -378,35 +386,63 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 
+
+
 var ReportComponent = (function () {
-    function ReportComponent() {
+    function ReportComponent(manageService) {
+        this.manageService = manageService;
+        this.types = 'week';
+        this.isEmptyData = true;
     }
+    ReportComponent.prototype.loadChart = function (type) {
+        var _this = this;
+        this.manageService.getGeneralHistory(type).subscribe(function (res) {
+            if (Object(__WEBPACK_IMPORTED_MODULE_2__x_utils__["a" /* checkEmptyObject */])(res)) {
+                _this.isEmptyData = true;
+            }
+            else {
+                _this.isEmptyData = false;
+                _this.reports = res;
+                _this.data = {
+                    labels: _this.getLabel(type),
+                    datasets: [
+                        {
+                            label: 'Tổng doanh thu',
+                            data: _this.reports.map(function (resp) {
+                                return resp.total;
+                            }),
+                            fill: false,
+                            borderColor: '#4bc0c0'
+                        }
+                    ]
+                };
+            }
+        });
+    };
     ReportComponent.prototype.ngOnInit = function () {
-        this.data = {
-            labels: ['01/02/2017', '02/02/2017', '03/02/2017', '04/02/2017', '05/02/2017', '06/02/2017', '07/02/2017'],
-            datasets: [
-                {
-                    label: 'Giúp việc',
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                    fill: false,
-                    borderColor: '#4bc0c0'
-                },
-                {
-                    label: 'Nấu ăn',
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                    fill: false,
-                    borderColor: '#565656'
-                },
-                {
-                    label: 'Y tá',
-                    data: [18, 38, 30, 29, 76, 17, 80],
-                    fill: false,
-                    borderColor: 'red'
-                }
-            ]
-        };
+        this.loadChart(this.types);
     };
     ReportComponent.prototype.selectData = function (event) {
+    };
+    ReportComponent.prototype.changeReportType = function (type) {
+        this.loadChart(type);
+    };
+    ReportComponent.prototype.getLabel = function (type) {
+        if (type === YEAR_CHART) {
+            return this.reports.map(function (res) {
+                return res.month + '/' + res.year;
+            });
+        }
+        else if (type === MONTH_CHART) {
+            return this.reports.map(function (res) {
+                return res.week;
+            });
+        }
+        else {
+            return this.reports.map(function (res) {
+                return res.day + '/' + res.month + '/' + res.year;
+            });
+        }
     };
     ReportComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -414,11 +450,14 @@ var ReportComponent = (function () {
             template: __webpack_require__("../../../../../src/app/manage/report/report.component.html"),
             styles: [__webpack_require__("../../../../../src/app/manage/report/report.component.css")]
         }),
-        __metadata("design:paramtypes", [])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__manage_service__["a" /* ManageService */]])
     ], ReportComponent);
     return ReportComponent;
 }());
 
+var DAY_CHART = 'day';
+var MONTH_CHART = 'month';
+var YEAR_CHART = 'year';
 
 
 /***/ }),
@@ -1163,7 +1202,7 @@ exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-b
 
 
 // module
-exports.push([module.i, "body {background: #EAEAEA;}\r\n.user-details {position: relative; padding: 0;}\r\n.user-details .user-image {position: relative;  z-index: 1; width: 100%; text-align: center;}\r\n .user-image img { clear: both; margin: auto; position: relative;}\r\n\r\n.user-details .user-info-block {width: 100%; position: absolute; top: 55px; background: rgb(255, 255, 255); z-index: 0; padding-top: 35px;}\r\n .user-info-block .user-heading {width: 100%; text-align: center; margin: 10px 0 0;}\r\n .user-info-block .navigation {float: left; width: 100%; margin: 0; padding: 0; list-style: none; border-bottom: 1px solid #428BCA; border-top: 1px solid #428BCA;}\r\n  .navigation li {float: left; margin: 0; padding: 0;}\r\n   .navigation li a {padding: 20px 30px; float: left;}\r\n   .navigation li.active a {background: #428BCA; color: #fff;}\r\n .user-info-block .user-body {float: left; padding: 5%; width: 90%;}\r\n  .user-body .tab-content > div {float: left; width: 100%;}\r\n  .user-body .tab-content h4 {width: 100%; margin: 10px 0; color: #333;}", ""]);
+exports.push([module.i, "\r\n  img {\r\n    max-height:500px;\r\n    max-width:500px;\r\n    height: auto;\r\n    width: auto;\r\n  }", ""]);
 
 // exports
 
@@ -1176,7 +1215,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff-detail/staff-detail.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<h4>Avatar:</h4>\n<img [src]=\"avatar\" class=\"img-rounded\" width=\"100%\" height=\"auto\" alt=\"Không có avatar\">\n<h4>Chứng chỉ:</h4>\n<img [src]=\"certificate\" class=\"img-rounded\" width=\"100%\" height=\"auto\" alt=\"Không có chứng chỉ\">\n"
+module.exports = "<div *ngIf=\"employee.avatar\">\n    <h4>Avatar:</h4>\n    <!-- <img [src]=\"avatar\" class=\"img-rounded\" width=\"100%\" height=\"auto\" alt=\"Không có avatar\"> -->\n    <img src=\"data:image/png;base64,{{employee.avatar}}\" width=\"100%\" height=\"auto\" alt=\"Không có avatar\" />\n</div>\n<div *ngIf=\"employee.certificate\">\n    <h4>Chứng chỉ:</h4>\n    <!-- <img [src]=\"certificate\" class=\"img-rounded\" width=\"100%\" height=\"auto\" alt=\"Không có chứng chỉ\"> -->\n    <img src=\"data:image/png;base64,{{employee.certificate}}\" width=\"100%\" height=\"auto\" alt=\"Không có chứng chỉ\" />\n</div>"
 
 /***/ }),
 
@@ -1255,7 +1294,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff-edit/staff-edit.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form #f=\"ngForm\">\n    <div class=\"form-group\">\n      <label for=\"pwd\">Số điện thoại:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Địa chỉ hiện tại:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Dịch vụ cung cấp:</label>\n      <select ngModel name=\"service_id\" id=\"service\" class=\"form-control\" required=\"required\">\n        <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n      </select>\n    </div>\n    <input type=\"file\" #avatar (change)=\"onUploadFile(avatar)\" name=\"avatar\" style=\"display:none;\">\n    <input type=\"file\" #certificate (change)=\"onUploadFile(certificate)\" name=\"certificate\" style=\"display:none;\">\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdate(f)\" [disabled]=\"!f.valid && !employee.id\">Cập nhật</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"certificate.click()\" [disabled]=\"!employee.id\">Upload Chứng chỉ</button>\n  </form>"
+module.exports = "<form #f=\"ngForm\">\n    <div class=\"form-group\">\n      <label for=\"pwd\">Số điện thoại:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Địa chỉ hiện tại:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Dịch vụ cung cấp:</label>\n      <select ngModel name=\"service_id\" id=\"service\" class=\"form-control\" required=\"required\">\n        <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n      </select>\n    </div>\n    <input type=\"file\" #avatar (change)=\"onUploadFile(avatar)\" name=\"avatar\" style=\"display:none;\">\n    <input type=\"file\" #certificate (change)=\"onUploadFile(certificate)\" name=\"certificate\" style=\"display:none;\">\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdate(f)\" [disabled]=\"!f.valid && !employee.id\">Cập nhật</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"certificate.click()\" >Upload Chứng chỉ</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"avatar.click()\">Upload Avatar</button>\n  </form>"
 
 /***/ }),
 
@@ -1270,6 +1309,7 @@ module.exports = "<form #f=\"ngForm\">\n    <div class=\"form-group\">\n      <l
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_srv_service__ = __webpack_require__("../../../../../src/app/manage/service/srv.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_models_staff_model__ = __webpack_require__("../../../../../src/app/shared/models/staff.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__angular_forms__ = __webpack_require__("../../../forms/esm5/forms.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1279,6 +1319,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1308,11 +1349,23 @@ var StaffEditComponent = (function () {
     };
     StaffEditComponent.prototype.onUploadFile = function (f) {
         var _this = this;
-        var formData = new FormData();
-        formData.append(f.name, f.files[0]);
-        this.userService.uploadCertificate(formData, this.employee.id).subscribe(function (res) {
-            _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
+        Object(__WEBPACK_IMPORTED_MODULE_6__x_utils__["b" /* getBase64Image */])(f.files[0]).then(function (res) {
+            if (f.name === 'certificate') {
+                _this.userService.uploadCertificate(_this.employee.id, res).subscribe(function (resp) {
+                    _this.employee.certificate = res;
+                    _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
+                });
+            }
+            else {
+                _this.userService.uploadAvatar(_this.employee.id, res).subscribe(function (resp) {
+                    _this.employee.avatar = res;
+                    _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
+                });
+            }
         });
+        // this.userService.uploadCertificate(formData, this.employee.id).subscribe(res => {
+        //   this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
+        // });
     };
     StaffEditComponent.prototype.onUpdate = function (f) {
         var _this = this;
@@ -1372,7 +1425,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff-frm/staff-frm.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"pwd\">Họ tên:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"full_name\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Mật khẩu:</label>\n    <input type=\"password\" class=\"form-control\" id=\"pwd\" ngModel name=\"password\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Số điện thoại:</label>\n    <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">CMT:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"identity_card\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Ngày sinh:</label><br/>\n    <p-calendar ngModel name=\"date_of_birth\"  [defaultDate]=\"defaultDate\"  dateFormat=\"dd/mm/yy\" required ></p-calendar>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Địa chỉ hiện tại:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Dịch vụ cung cấp:</label>\n    <select ngModel name=\"service\" id=\"service\" class=\"form-control\" required=\"required\">\n      <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n    </select>\n  </div>\n  <input type=\"file\" #avatar (change)=\"onUploadFile(avatar)\" name=\"avatar\" style=\"display:none;\">\n  <input type=\"file\" #certificate (change)=\"onUploadFile(certificate)\" name=\"certificate\" style=\"display:none;\">\n  <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onAdd(f)\" [disabled]=\"!f.valid && !employee.id\">Thêm mới</button>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"avatar.click()\" [disabled]=\"!employee.id\">Upload Avatar</button>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"certificate.click()\" [disabled]=\"!employee.id\">Upload Chứng chỉ</button>\n</form>"
+module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"pwd\">Họ tên:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"full_name\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Mật khẩu:</label>\n    <input type=\"password\" class=\"form-control\" id=\"pwd\" ngModel name=\"password\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Số điện thoại:</label>\n    <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">CMT:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"identity_card\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Ngày sinh:</label><br/>\n    <p-calendar ngModel name=\"date_of_birth\"  [defaultDate]=\"defaultDate\"  dateFormat=\"dd/mm/yy\" required ></p-calendar>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Địa chỉ hiện tại:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Dịch vụ cung cấp:</label>\n    <select ngModel name=\"service\" id=\"service\" class=\"form-control\" required=\"required\">\n      <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n    </select>\n  </div>\n  <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onAdd(f)\" [disabled]=\"!f.valid && !employee.id\">Thêm mới</button>\n</form>"
 
 /***/ }),
 
@@ -1419,19 +1472,17 @@ var StaffFrmComponent = (function () {
         console.log(d.value);
     };
     StaffFrmComponent.prototype.onUploadFile = function (f) {
-        var _this = this;
-        var formData = new FormData();
-        formData.append(f.name, f.files[0]);
-        if (f.name === 'avatar') {
-            this.userService.uploadAvatar(formData, this.employee.id).subscribe(function (res) {
-                _this.alertService.success('Thông báo', 'Upload avatar thành công');
-            });
-        }
-        else {
-            this.userService.uploadCertificate(formData, this.employee.id).subscribe(function (res) {
-                _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
-            });
-        }
+        // const formData = new FormData();
+        // formData.append(f.name, f.files[0]);
+        // if (f.name === 'avatar') {
+        //   this.userService.uploadAvatar(formData, this.employee.id).subscribe(res => {
+        //     this.alertService.success('Thông báo', 'Upload avatar thành công');
+        //   });
+        // } else {
+        //   // this.userService.uploadCertificate(formData, this.employee.id).subscribe(res => {
+        //   //   this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
+        //   // });
+        // }
     };
     StaffFrmComponent.prototype.onAdd = function (f) {
         var _this = this;
@@ -1700,11 +1751,11 @@ var UserService = (function () {
     UserService.prototype.createEmployee = function (e) {
         return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].createEmployee, e, true);
     };
-    UserService.prototype.uploadAvatar = function (f, id) {
-        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].uploadAvatar + '?id=' + id, f, true);
+    UserService.prototype.uploadAvatar = function (id, base64) {
+        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].uploadAvatar, { id: id, base64: base64 }, true);
     };
-    UserService.prototype.uploadCertificate = function (f, id) {
-        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].uploadCertificate + '?id=' + id, f, true);
+    UserService.prototype.uploadCertificate = function (id, base64) {
+        return this.httpApi.Post(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].uploadCertificate, { id: id, base64: base64 }, true);
     };
     UserService.prototype.activeEmployee = function (id) {
         return this.httpApi.Get(__WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].activeEmployee, { id: id }, true);
@@ -1769,8 +1820,22 @@ var Empwork = (function () {
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = checkEmptyObject;
+/* harmony export (immutable) */ __webpack_exports__["b"] = getBase64Image;
 function checkEmptyObject(param) {
     return Object.keys(param).length === 0 && param.constructor === Object;
+}
+function getBase64Image(file) {
+    return new Promise(function (resolve, reject) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        console.log(1);
+        reader.onload = function () {
+            resolve(reader.result.split(',')[1]);
+        };
+        reader.onerror = function () {
+            reject('error loading file');
+        };
+    });
 }
 
 

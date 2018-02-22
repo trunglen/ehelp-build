@@ -266,6 +266,7 @@ var ApplicationApiResource = {
     updateService: createUrl('admin/service/update'),
     deleteService: createUrl('admin/service/delete'),
     getOrderHistory: createUrl('admin/report/order-history'),
+    getGeneralReport: createUrl('admin/report/general'),
     deleteTool: createUrl('admin/service/tool/delete'),
 };
 var StaticResource = {

@@ -86,7 +86,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/app.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<p-progressBar mode=\"indeterminate\" *ngIf=\"showLoading\" [style]=\"{'height': '6px'}\"></p-progressBar>\n<router-outlet></router-outlet>\n<p-growl [(value)]=\"msgs\"></p-growl>"
+module.exports = "<!--The content below is only a placeholder and can be replaced.-->\n<p-progressBar mode=\"indeterminate\" *ngIf=\"showLoading\" [style]=\"{'height': '6px'}\"></p-progressBar>\n<router-outlet></router-outlet>\n<p-growl [(value)]=\"msgs\"></p-growl>\n<p-confirmDialog header=\"Xác nhận\" icon=\"fa fa-question-circle\" width=\"425\"></p-confirmDialog>\n"
 
 /***/ }),
 
@@ -290,12 +290,16 @@ var StaticResource = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__home_home_component__ = __webpack_require__("../../../../../src/app/core/home/home.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_primeng_primeng__ = __webpack_require__("../../../../primeng/primeng.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_primeng_primeng___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_primeng_primeng__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__switch_switch_component__ = __webpack_require__("../../../../../src/app/core/switch/switch.component.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__angular_forms__ = __webpack_require__("../../../forms/esm5/forms.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -311,18 +315,21 @@ var CoreModule = (function () {
             imports: [
                 __WEBPACK_IMPORTED_MODULE_1__angular_common__["CommonModule"],
                 __WEBPACK_IMPORTED_MODULE_6_primeng_primeng__["PanelMenuModule"],
+                __WEBPACK_IMPORTED_MODULE_8__angular_forms__["FormsModule"]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_2__header_header_component__["a" /* HeaderComponent */],
                 __WEBPACK_IMPORTED_MODULE_3__left_menu_left_menu_component__["a" /* LeftMenuComponent */],
                 __WEBPACK_IMPORTED_MODULE_4__page_header_page_header_component__["a" /* PageHeaderComponent */],
-                __WEBPACK_IMPORTED_MODULE_5__home_home_component__["a" /* HomeComponent */]
+                __WEBPACK_IMPORTED_MODULE_5__home_home_component__["a" /* HomeComponent */],
+                __WEBPACK_IMPORTED_MODULE_7__switch_switch_component__["a" /* SwitchComponent */]
             ],
             exports: [
                 __WEBPACK_IMPORTED_MODULE_2__header_header_component__["a" /* HeaderComponent */],
                 __WEBPACK_IMPORTED_MODULE_3__left_menu_left_menu_component__["a" /* LeftMenuComponent */],
                 __WEBPACK_IMPORTED_MODULE_4__page_header_page_header_component__["a" /* PageHeaderComponent */],
-                __WEBPACK_IMPORTED_MODULE_5__home_home_component__["a" /* HomeComponent */]
+                __WEBPACK_IMPORTED_MODULE_5__home_home_component__["a" /* HomeComponent */],
+                __WEBPACK_IMPORTED_MODULE_7__switch_switch_component__["a" /* SwitchComponent */]
             ]
         })
     ], CoreModule);
@@ -644,6 +651,79 @@ var PageHeaderComponent = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/core/switch/switch.component.css":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("../../../../css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "/* The switch - the box around the slider */\r\n.switch {\r\n    position: relative;\r\n    display: inline-block;\r\n    width: 60px;\r\n    height: 34px;\r\n  }\r\n  \r\n  /* Hide default HTML checkbox */\r\n  .switch input {display:none;}\r\n  \r\n  /* The slider */\r\n  .slider {\r\n    position: absolute;\r\n    cursor: pointer;\r\n    top: 0;\r\n    left: 0;\r\n    right: 0;\r\n    bottom: 0;\r\n    background-color: #ccc;\r\n    transition: .4s;\r\n  }\r\n  \r\n  .slider:before {\r\n    position: absolute;\r\n    content: \"\";\r\n    height: 26px;\r\n    width: 26px;\r\n    left: 4px;\r\n    bottom: 4px;\r\n    background-color: white;\r\n    transition: .4s;\r\n  }\r\n  \r\n  input:checked + .slider {\r\n    background-color: #2196F3;\r\n  }\r\n  \r\n  input:focus + .slider {\r\n    box-shadow: 0 0 1px #2196F3;\r\n  }\r\n  \r\n  input:checked + .slider:before {\r\n    -webkit-transform: translateX(26px);\r\n    transform: translateX(26px);\r\n  }\r\n  \r\n  /* Rounded sliders */\r\n  .slider.round {\r\n    border-radius: 34px;\r\n  }\r\n  \r\n  .slider.round:before {\r\n    border-radius: 50%;\r\n  }", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ "../../../../../src/app/core/switch/switch.component.html":
+/***/ (function(module, exports) {
+
+module.exports = "<label class=\"switch\">\n  <input type=\"checkbox\" [(ngModel)]=\"default\" (change)=\"onChangeValue()\">\n  <span class=\"slider round\"></span>\n</label>"
+
+/***/ }),
+
+/***/ "../../../../../src/app/core/switch/switch.component.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SwitchComponent; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+var SwitchComponent = (function () {
+    function SwitchComponent() {
+        this.change = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+    }
+    SwitchComponent.prototype.ngOnInit = function () {
+    };
+    SwitchComponent.prototype.onChangeValue = function () {
+        this.change.emit(this.default);
+    };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", Boolean)
+    ], SwitchComponent.prototype, "default", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+        __metadata("design:type", Object)
+    ], SwitchComponent.prototype, "change", void 0);
+    SwitchComponent = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+            selector: 'app-switch',
+            template: __webpack_require__("../../../../../src/app/core/switch/switch.component.html"),
+            styles: [__webpack_require__("../../../../../src/app/core/switch/switch.component.css")]
+        }),
+        __metadata("design:paramtypes", [])
+    ], SwitchComponent);
+    return SwitchComponent;
+}());
+
+
+
+/***/ }),
+
 /***/ "../../../../../src/app/shared/alert.service.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -926,7 +1006,8 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["InputSwitchModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["FileUploadModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["CalendarModule"],
-                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"]
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ConfirmDialogModule"]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */],
@@ -953,13 +1034,15 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["InputSwitchModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["FileUploadModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["CalendarModule"],
-                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"]
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ConfirmDialogModule"]
             ],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_3__x_http__["a" /* HttpApi */],
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ConfirmationService"]
             ]
         })
     ], SharedModule);

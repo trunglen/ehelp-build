@@ -21,7 +21,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/manage.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n      <div class=\"col-md-2 sidebar\">\n          <app-left-menu></app-left-menu>\n        </div>\n        <div class=\"col-md-10\">\n            <router-outlet></router-outlet>\n        </div>\n  </div>\n</div>\n"
+module.exports = "<div class=\"container-fluid\">\n  <div class=\"row\">\n      <div class=\"col-md-2 sidebar\">\n          <app-left-menu></app-left-menu>\n        </div>\n        <div class=\"col-md-10\">\n            <router-outlet></router-outlet>\n        </div>\n  </div>\n</div>\n<p-confirmDialog header=\"Xác nhận\" icon=\"fa fa-question-circle\" width=\"425\"></p-confirmDialog>\n"
 
 /***/ }),
 
@@ -151,7 +151,7 @@ var ManageModule = (function () {
             providers: [
                 __WEBPACK_IMPORTED_MODULE_8__service_srv_service__["a" /* SrvService */],
                 __WEBPACK_IMPORTED_MODULE_11__user_user_service__["a" /* UserService */],
-                __WEBPACK_IMPORTED_MODULE_16__manage_service__["a" /* ManageService */]
+                __WEBPACK_IMPORTED_MODULE_16__manage_service__["a" /* ManageService */],
             ]
         })
     ], ManageModule);
@@ -610,6 +610,9 @@ module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-head
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__srv_service__ = __webpack_require__("../../../../../src/app/manage/service/srv.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_primeng_primeng__ = __webpack_require__("../../../../primeng/primeng.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_primeng_primeng___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_primeng_primeng__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_alert_service__ = __webpack_require__("../../../../../src/app/shared/alert.service.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -622,9 +625,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var ServiceComponent = (function () {
-    function ServiceComponent(srvService) {
+    function ServiceComponent(srvService, confirmationService, alertService) {
         this.srvService = srvService;
+        this.confirmationService = confirmationService;
+        this.alertService = alertService;
         this.pService = 1;
         this.services = [];
         this.displayServices = [];
@@ -651,8 +658,14 @@ var ServiceComponent = (function () {
     };
     ServiceComponent.prototype.onDeleteService = function (id) {
         var _this = this;
-        this.srvService.deleteService(id).subscribe(function (res) {
-            _this.services.splice(_this.services.indexOf(_this.services.find(function (t) { return t.id === id; })), 1);
+        this.confirmationService.confirm({
+            message: 'Bạn có chắc muốn xóa?',
+            accept: function () {
+                _this.srvService.deleteService(id).subscribe(function (res) {
+                    _this.services.splice(_this.services.indexOf(_this.services.find(function (t) { return t.id === id; })), 1);
+                    _this.alertService.success('Thành công', 'Xóa dịch vụ thành công');
+                });
+            }
         });
     };
     ServiceComponent.prototype.onAddNodeService = function (node) {
@@ -698,7 +711,9 @@ var ServiceComponent = (function () {
             template: __webpack_require__("../../../../../src/app/manage/service/service.component.html"),
             styles: [__webpack_require__("../../../../../src/app/manage/service/service.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__srv_service__["a" /* SrvService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__srv_service__["a" /* SrvService */],
+            __WEBPACK_IMPORTED_MODULE_3_primeng_primeng__["ConfirmationService"],
+            __WEBPACK_IMPORTED_MODULE_4__shared_alert_service__["a" /* AlertService */]])
     ], ServiceComponent);
     return ServiceComponent;
 }());
@@ -792,7 +807,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/tool/tool.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Công cụ hỗ trợ</div>\n  <div class=\"panel-body\">\n    <button class=\"btn btn-primary\" (click)=\"showCreateFrm=!showCreateFrm\" *ngIf=\"!showCreateFrm\">\n      Thêm mới\n    </button>\n    <form #f1=\"ngForm\"  *ngIf=\"showCreateFrm\">\n      <div class=\"form-group\">\n        <label for=\"email\">Tên công cụ:</label>\n        <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\" required>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Giá:</label>\n        <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price\" required>\n      </div>\n      <button type=\"button\" (click)=\"onCreateTool(f1)\" class=\"btn btn-primary\" [disabled]=\"!f1.valid\">Thêm công cụ</button>\n    </form>\n\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Tên công cụ</th>\n          <th>Giá</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let t of tools | paginate: { itemsPerPage: 5, currentPage: pTool}\">\n          <td>{{t.name}}</td>\n          <td>{{t.price}}</td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"showDialog(t)\">Cập nhật</button>\n            <button class=\"btn btn-danger\" (click)=\"onDeleteTool(t.id)\">Xóa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls (pageChange)=\"pTool = $event\"></pagination-controls>\n    </div>\n  </div>\n</div>\n\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"display\" [width]=\"600\">\n  <form>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Tên:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editTool.name\" name=\"name\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Gía:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editTool.price\" name=\"price\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdateTool(editTool)\">Sửa thông tin</button>\n  </form>\n</p-dialog>"
+module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Công cụ hỗ trợ</div>\n  <div class=\"panel-body\">\n    <button class=\"btn btn-primary\" (click)=\"showCreateFrm=!showCreateFrm\" *ngIf=\"!showCreateFrm\">\n      Thêm mới\n    </button>\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Tên công cụ</th>\n          <th>Giá</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let t of tools | paginate: { itemsPerPage: 5, currentPage: pTool}\">\n          <td>{{t.name}}</td>\n          <td>{{t.price}}</td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"showDialog(t)\">Cập nhật</button>\n            <button class=\"btn btn-danger\" (click)=\"onDeleteTool(t.id)\">Xóa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls (pageChange)=\"pTool = $event\"></pagination-controls>\n    </div>\n  </div>\n</div>\n\n<p-dialog header=\"Cập nhật công cụ\" [(visible)]=\"display\" [width]=\"600\">\n  <form>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Tên:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editTool.name\" name=\"name\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Gía:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editTool.price\" name=\"price\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdateTool(editTool)\">Sửa công cụ</button>\n  </form>\n</p-dialog>\n\n<p-dialog header=\"Thêm công cụ\" [(visible)]=\"showCreateFrm\" [width]=\"600\">\n  <form #f1=\"ngForm\">\n    <div class=\"form-group\">\n      <label for=\"email\">Tên công cụ:</label>\n      <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\" required>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Giá:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price\" required>\n    </div>\n    <button type=\"button\" (click)=\"onCreateTool(f1)\" class=\"btn btn-primary\" [disabled]=\"!f1.valid\">Thêm công cụ</button>\n  </form>\n</p-dialog>\n"
 
 /***/ }),
 
@@ -804,6 +819,9 @@ module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-head
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__service_srv_service__ = __webpack_require__("../../../../../src/app/manage/service/srv.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_alert_service__ = __webpack_require__("../../../../../src/app/shared/alert.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_primeng_primeng__ = __webpack_require__("../../../../primeng/primeng.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_primeng_primeng___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_primeng_primeng__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -816,9 +834,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
+
 var ToolComponent = (function () {
-    function ToolComponent(srvService) {
+    function ToolComponent(srvService, alertService, confirmationService) {
         this.srvService = srvService;
+        this.alertService = alertService;
+        this.confirmationService = confirmationService;
         this.showCreateFrm = false;
         this.tools = [];
         this.editTool = {};
@@ -838,12 +860,19 @@ var ToolComponent = (function () {
         this.srvService.createTool(f1.value).subscribe(function (res) {
             _this.tools.push(res);
             _this.showCreateFrm = false;
+            _this.alertService.success('Thành công', 'Thêm công cụ thành công');
         });
     };
     ToolComponent.prototype.onDeleteTool = function (id) {
         var _this = this;
-        this.srvService.deleteTool(id).subscribe(function (res) {
-            _this.tools.splice(_this.tools.indexOf(_this.tools.find(function (t) { return t.id === id; })), 1);
+        this.confirmationService.confirm({
+            message: 'Bạn có chắc muốn xóa?',
+            accept: function () {
+                _this.srvService.deleteTool(id).subscribe(function (res) {
+                    _this.tools.splice(_this.tools.indexOf(_this.tools.find(function (t) { return t.id === id; })), 1);
+                    _this.alertService.success('Thành công', 'Xóa công cụ thành công');
+                });
+            }
         });
     };
     ToolComponent.prototype.onUpdateTool = function (t) {
@@ -860,9 +889,11 @@ var ToolComponent = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-tool',
             template: __webpack_require__("../../../../../src/app/manage/tool/tool.component.html"),
-            styles: [__webpack_require__("../../../../../src/app/manage/tool/tool.component.css")]
+            styles: [__webpack_require__("../../../../../src/app/manage/tool/tool.component.css")],
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__service_srv_service__["a" /* SrvService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__service_srv_service__["a" /* SrvService */],
+            __WEBPACK_IMPORTED_MODULE_3__shared_alert_service__["a" /* AlertService */],
+            __WEBPACK_IMPORTED_MODULE_4_primeng_primeng__["ConfirmationService"]])
     ], ToolComponent);
     return ToolComponent;
 }());
@@ -1121,7 +1152,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/boss/boss.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người thuê</div>\n  <div class=\"panel-body\">\n    <p-dataList [value]=\"bosses\" [paginator]=\"true\" [rows]=\"5\">\n      <p-header>\n        Danh sách người thuê\n      </p-header>\n      <ng-template let-s pTemplate=\"item\">\n        <div class=\"ui-g ui-fluid car-item\">\n          <div class=\"ui-g-12 ui-md-2\" style=\"text-align:center\">\n            <img src=\"https://www.primefaces.org/primeng/assets/showcase/images/demo/car/Jaguar.png\" (click)=\"showDialog(s)\">\n          </div>\n          <div class=\"ui-g-12 ui-md-5 car-details\">\n            <div class=\"ui-g\">\n              <div class=\"ui-g-2 ui-sm-6\">Họ tên: </div>\n              <div class=\"ui-g-10 ui-sm-6\">{{s.full_name}}</div>\n\n              <div class=\"ui-g-2 ui-sm-6\">SĐT: </div>\n              <div class=\"ui-g-10 ui-sm-6\">{{s.phone}}</div>\n\n              <div class=\"ui-g-2 ui-sm-6\">CMT: </div>\n              <div class=\"ui-g-10 ui-sm-6\">{{s.identity_card}}</div>\n\n              <div class=\"ui-g-2 ui-sm-6\">ĐC: </div>\n              <div class=\"ui-g-10 ui-sm-6\">{{s.address}}</div>\n            </div>\n          </div>\n          <div class=\"ui-g-12 ui-md-5 car-details\">\n            <div class=\"ui-g\">\n              <div class=\"ui-g-2 ui-sm-6\">Email: </div>\n              <div class=\"ui-g-10 ui-sm-6\">{{s.email}}</div>\n\n              <div class=\"ui-g-2 ui-sm-6\">Trạng thái: </div>\n              <div class=\"ui-g-10 ui-sm-6\">\n                {{s.is_active?'Đã kích hoạt':'Chưa kích hoạt'}}\n                <button class=\"btn btn-primary\" *ngIf=\"!s.is_active\" (click)=\"onActive(s)\">Kích hoạt</button>\n                <button class=\"btn btn-primary\" *ngIf=\"s.is_active\" (click)=\"onDeactive(s)\">Ngừng kích hoạt</button>\n              </div>\n            </div>\n          </div>\n        </div>\n      </ng-template>\n    </p-dataList>\n  </div>\n</div>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"display\" [width]=\"600\">\n  <form>\n      <div class=\"form-group\">\n          <label for=\"pwd\">Tên:</label>\n          <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editBoss.full_name\" name=\"name\">\n        </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email:</label>\n      <input type=\"email\" class=\"form-control\" id=\"email\" [(ngModel)]=\"editBoss.email\" name=\"email\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Số điện thoại:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\"  [(ngModel)]=\"editBoss.phone\" name=\"phone\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">CMT:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\"  [(ngModel)]=\"editBoss.identity_card\" name=\"identity_card\">\n    </div>\n    <div class=\"form-group\">\n        <label for=\"pwd\">Địa chỉ:</label>\n        <input type=\"text\" class=\"form-control\" id=\"pwd\"  [(ngModel)]=\"editBoss.address\" name=\"address\">\n      </div>\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdateBoss()\">Sửa thông tin</button>\n  </form>\n</p-dialog>"
+module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người thuê</div>\n  <div class=\"panel-body\">\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Họ tên</th>\n          <th>SĐT</th>\n          <th>CMT</th>\n          <th>Địa chỉ</th>\n          <th>Email</th>\n          <th>Trạng thái</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of bosses | paginate: { itemsPerPage: 10, currentPage: p }\">\n          <td>{{s.full_name}}</td>\n          <td>{{s.phone}}</td>\n          <td>{{s.identity_card}}</td>\n          <td>{{s.address}}</td>\n          <td>{{s.email}}</td>\n          <td>\n            <app-switch [default]=\"s.is_active\" (change)=\"onChange($event, s)\"></app-switch>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls previousLabel=\"<\" nextLabel=\">\" (pageChange)=\"p = $event\"></pagination-controls>\n    </div>\n  </div>\n</div>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"display\" [width]=\"600\">\n  <form>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Tên:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editBoss.full_name\" name=\"name\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"email\">Email:</label>\n      <input type=\"email\" class=\"form-control\" id=\"email\" [(ngModel)]=\"editBoss.email\" name=\"email\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Số điện thoại:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editBoss.phone\" name=\"phone\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">CMT:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editBoss.identity_card\" name=\"identity_card\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Địa chỉ:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editBoss.address\" name=\"address\">\n    </div>\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdateBoss()\">Sửa thông tin</button>\n  </form>\n</p-dialog>"
 
 /***/ }),
 
@@ -1169,15 +1200,15 @@ var BossComponent = (function () {
             _this.display = false;
         });
     };
-    BossComponent.prototype.onActive = function (b) {
-        this.userService.activeCustomer(b.id).subscribe(function (res) {
-            b.is_active = true;
-        });
-    };
-    BossComponent.prototype.onDeactive = function (b) {
-        this.userService.deactiveCustomer(b.id).subscribe(function (res) {
-            b.is_active = false;
-        });
+    BossComponent.prototype.onChange = function ($event, b) {
+        if ($event) {
+            this.userService.activeCustomer(b.id).subscribe(function (res) {
+            });
+        }
+        else {
+            this.userService.deactiveCustomer(b.id).subscribe(function (res) {
+            });
+        }
     };
     BossComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_2__angular_core__["Component"])({
@@ -1531,7 +1562,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người giúp việc</div>\n  <div class=\"panel-body\">\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Họ tên</th>\n          <th>SĐT</th>\n          <th>Ngày sinh</th>\n          <th>Địa chỉ</th>\n          <th>Dịch vụ cung cấp</th>\n          <th>Trạng thái</th>\n          <th>Hành động</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of staffs | paginate: { itemsPerPage: 20, currentPage: p }\">\n          <td>{{s.full_name}}</td>\n          <td>{{s.phone}}</td>\n          <td>{{s.date_of_birth | date: 'dd/MM/yyyy'}}</td>\n          <td>{{s.address}}</td>\n          <td>{{s.service_name}}</td>\n          <td>\n            <p-inputSwitch onLabel=\"Kích hoạt\" offLabel=\"Ngừng kích hoạt\" [(ngModel)]=\"s.is_active\" (onChange)=\"onActive($event, s)\"></p-inputSwitch>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"displayDetail = true;selectedStaff=s\">Chi tiết</button>\n            <button class=\"btn btn-primary\" (click)=\"displayUpdateFrm = true;selectedStaff=s\">Sửa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls previousLabel=\"<\" nextLabel=\">\" (pageChange)=\"p = $event\"></pagination-controls>\n    </div>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"displayAddFrm=true\">Thêm mới</button>\n  </div>\n</div>\n<p-overlayPanel #op>\n  Content\n</p-overlayPanel>\n<p-dialog header=\"Thêm mới thông tin\" [(visible)]=\"displayAddFrm\" [width]=\"600\">\n  <app-staff-frm></app-staff-frm>\n</p-dialog>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"displayUpdateFrm\" [width]=\"600\">\n    <app-staff-edit [employee]=\"selectedStaff\"></app-staff-edit>\n</p-dialog>\n<p-dialog header=\"Chi tiết thông tin\" [(visible)]=\"displayDetail\" [width]=\"600\">\n    <app-staff-detail [employee]=\"selectedStaff\"></app-staff-detail>\n</p-dialog>\n<!-- comment -->\n\n\n<!-- <p-dataList [value]=\"staffs\" [paginator]=\"true\" [rows]=\"5\">\n    <p-header>\n      Danh sách người giúp việc\n    </p-header>\n    <ng-template let-s pTemplate=\"item\">\n      <div class=\"ui-g ui-fluid car-item\">\n        <div class=\"ui-g-12 ui-md-2\" style=\"text-align:center\">\n          <img [src]=\"'http://localhost:8080/static/avatar/'+s.id\" alt=\"No avatar\" (click)=\"showDialog(s)\" width=\"120px\" height=\"120px\">\n          \n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Họ tên: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.full_name}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Ngày sinh: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.date_of_birth | date: 'dd/MM/yyyy'}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">ĐĐ làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.address_work}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Trạng thái: </div>\n            <div class=\"ui-g-8 ui-sm-6\">\n              <p-inputSwitch onLabel=\"Kích hoạt\" offLabel=\"Ngừng kích hoạt\" [(ngModel)]=\"s.is_active\" (onChange)=\"onActive($event, s)\"></p-inputSwitch>\n            </div>\n          </div>\n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian bắt đầu làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.start_time| date: 'dd/MM/yyyy'}}</div>\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian kết thúc: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.end_time|date}}</div>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </p-dataList> -->"
+module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người giúp việc</div>\n  <div class=\"panel-body\">\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Họ tên</th>\n          <th>SĐT</th>\n          <th>Ngày sinh</th>\n          <th>Địa chỉ</th>\n          <th>Dịch vụ cung cấp</th>\n          <th>Trạng thái</th>\n          <th>Hành động</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of staffs | paginate: { itemsPerPage: 10, currentPage: p }\">\n          <td>{{s.full_name}}</td>\n          <td>{{s.phone}}</td>\n          <td>{{s.date_of_birth | date: 'dd/MM/yyyy'}}</td>\n          <td>{{s.address}}</td>\n          <td>{{s.service_name}}</td>\n          <td>\n            <app-switch [default]=\"s.is_active\" (change)=\"onChange($event, s)\"></app-switch>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"displayDetail = true;selectedStaff=s\">Chi tiết</button>\n            <button class=\"btn btn-primary\" (click)=\"displayUpdateFrm = true;selectedStaff=s\">Sửa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls previousLabel=\"<\" nextLabel=\">\" (pageChange)=\"p = $event\"></pagination-controls>\n    </div>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"displayAddFrm=true\">Thêm mới</button>\n  </div>\n</div>\n<p-overlayPanel #op>\n  Content\n</p-overlayPanel>\n<p-dialog header=\"Thêm mới thông tin\" [(visible)]=\"displayAddFrm\" [width]=\"600\">\n  <app-staff-frm></app-staff-frm>\n</p-dialog>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"displayUpdateFrm\" [width]=\"600\">\n    <app-staff-edit [employee]=\"selectedStaff\"></app-staff-edit>\n</p-dialog>\n<p-dialog header=\"Chi tiết thông tin\" [(visible)]=\"displayDetail\" [width]=\"600\">\n    <app-staff-detail [employee]=\"selectedStaff\"></app-staff-detail>\n</p-dialog>\n<!-- comment -->\n\n\n<!-- <p-dataList [value]=\"staffs\" [paginator]=\"true\" [rows]=\"5\">\n    <p-header>\n      Danh sách người giúp việc\n    </p-header>\n    <ng-template let-s pTemplate=\"item\">\n      <div class=\"ui-g ui-fluid car-item\">\n        <div class=\"ui-g-12 ui-md-2\" style=\"text-align:center\">\n          <img [src]=\"'http://localhost:8080/static/avatar/'+s.id\" alt=\"No avatar\" (click)=\"showDialog(s)\" width=\"120px\" height=\"120px\">\n          \n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Họ tên: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.full_name}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Ngày sinh: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.date_of_birth | date: 'dd/MM/yyyy'}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">ĐĐ làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.address_work}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Trạng thái: </div>\n            <div class=\"ui-g-8 ui-sm-6\">\n              <p-inputSwitch onLabel=\"Kích hoạt\" offLabel=\"Ngừng kích hoạt\" [(ngModel)]=\"s.is_active\" (onChange)=\"onActive($event, s)\"></p-inputSwitch>\n            </div>\n          </div>\n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian bắt đầu làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.start_time| date: 'dd/MM/yyyy'}}</div>\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian kết thúc: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.end_time|date}}</div>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </p-dataList> -->"
 
 /***/ }),
 
@@ -1616,6 +1647,16 @@ var StaffComponent = (function () {
     };
     StaffComponent.prototype.onDetail = function (s) {
         this.selectedStaff = s;
+    };
+    StaffComponent.prototype.onChange = function ($event, s) {
+        if ($event) {
+            this.userService.activeEmployee(s.id).subscribe(function (res) {
+            });
+        }
+        else {
+            this.userService.deactiveEmployee(s.id).subscribe(function (res) {
+            });
+        }
     };
     StaffComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({

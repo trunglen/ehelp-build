@@ -539,6 +539,11 @@ var LeftMenuComponent = (function () {
                 label: 'Theo dõi đơn hàng',
                 icon: 'fa-sticky-note',
                 routerLink: 'order-history'
+            },
+            {
+                label: 'Đăng xuất',
+                icon: 'fa-sticky-note',
+                routerLink: '/auth/signin'
             }
         ];
     };
@@ -694,12 +699,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 var SwitchComponent = (function () {
     function SwitchComponent() {
-        this.change = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
+        this.changeValue = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     SwitchComponent.prototype.ngOnInit = function () {
     };
     SwitchComponent.prototype.onChangeValue = function () {
-        this.change.emit(this.default);
+        this.changeValue.emit(this.default);
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
@@ -708,7 +713,7 @@ var SwitchComponent = (function () {
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
         __metadata("design:type", Object)
-    ], SwitchComponent.prototype, "change", void 0);
+    ], SwitchComponent.prototype, "changeValue", void 0);
     SwitchComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-switch',
@@ -901,6 +906,37 @@ var PageNotFoundComponent = (function () {
 
 /***/ }),
 
+/***/ "../../../../../src/app/shared/pipe/currency.pipe.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CurrencyPipe; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+
+var CurrencyPipe = (function () {
+    function CurrencyPipe() {
+    }
+    CurrencyPipe.prototype.transform = function (value, args) {
+        return null;
+    };
+    CurrencyPipe = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Pipe"])({
+            name: 'currency'
+        })
+    ], CurrencyPipe);
+    return CurrencyPipe;
+}());
+
+
+
+/***/ }),
+
 /***/ "../../../../../src/app/shared/services/auth-guard.service.ts":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -964,12 +1000,17 @@ var AuthGuard = (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__page_not_found_page_not_found_component__ = __webpack_require__("../../../../../src/app/shared/page-not-found/page-not-found.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_ng2_smart_table__ = __webpack_require__("../../../../ng2-smart-table/index.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_pagination__ = __webpack_require__("../../../../ngx-pagination/dist/ngx-pagination.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_currency_mask__ = __webpack_require__("../../../../ng2-currency-mask/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_ng2_currency_mask___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_ng2_currency_mask__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pipe_currency_pipe__ = __webpack_require__("../../../../../src/app/shared/pipe/currency.pipe.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
 
 
 
@@ -1007,13 +1048,16 @@ var SharedModule = (function () {
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["FileUploadModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["CalendarModule"],
                 __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["OverlayPanelModule"],
-                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ConfirmDialogModule"]
+                __WEBPACK_IMPORTED_MODULE_5_primeng_primeng__["ConfirmDialogModule"],
+                __WEBPACK_IMPORTED_MODULE_10_ng2_currency_mask__["CurrencyMaskModule"]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_6__alert_alert_component__["a" /* AlertComponent */],
-                __WEBPACK_IMPORTED_MODULE_7__page_not_found_page_not_found_component__["a" /* PageNotFoundComponent */]
+                __WEBPACK_IMPORTED_MODULE_7__page_not_found_page_not_found_component__["a" /* PageNotFoundComponent */],
+                __WEBPACK_IMPORTED_MODULE_11__pipe_currency_pipe__["a" /* CurrencyPipe */]
             ],
             exports: [
+                __WEBPACK_IMPORTED_MODULE_10_ng2_currency_mask__["CurrencyMaskModule"],
                 __WEBPACK_IMPORTED_MODULE_4__angular_material__["a" /* MatButtonModule */],
                 __WEBPACK_IMPORTED_MODULE_4__angular_material__["b" /* MatCheckboxModule */],
                 __WEBPACK_IMPORTED_MODULE_4__angular_material__["c" /* MatSelectModule */],
@@ -1169,7 +1213,7 @@ var SpinnerService = (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
 var environment = {
     production: true,
-    baseURL: 'http://localhost:8080/api/',
+    baseURL: 'http://163.44.206.108:8080/api/',
     baseWS: 'ws://163.44.206.108:3000/room/'
 };
 
@@ -1189,7 +1233,7 @@ var environment = {
     production: false,
     baseURL: 'http://163.44.206.108:8080/api/',
     staticURL: 'http://163.44.206.108:8080/static/',
-    baseWS: 'ws://163.44.206.108:3000/room/'
+    baseWS: 'ws://localhost:3000/room/'
 };
 
 

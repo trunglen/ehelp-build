@@ -291,7 +291,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/order/order.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"col-md-12\">\n  <div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Lịch sử đơn hàng</div>\n    <div class=\"panel-body\">\n\n      <table class=\"table table-hover\">\n        <thead>\n          <tr>\n            <th>Ngày tạo</th>\n            <th>Khách hàng</th>\n            <th>Người giúp việc</th>\n            <th>Thời gian làm</th>\n            <th>Chi phí</th>\n            <th>Trạng thái</th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let o of orderHistory | paginate: { itemsPerPage: 15, currentPage: p}\">\n            <td>{{o.created_at *1000 |date}}</td>\n            <td>{{o.customer}} - {{o.customer_phone}}</td>\n            <td>{{o.employee}} - {{o.employee_phone}}</td>\n            <td>{{o.hour_day}}</td>\n            <td>{{o.money_day}}</td>\n            <td>{{o.status}}</td>\n          </tr>\n        </tbody>\n      </table>\n      <div class=\"row text-center\">\n        <pagination-controls (pageChange)=\"p = $event\"></pagination-controls>\n      </div>\n    </div>\n  </div>\n\n</div>"
+module.exports = "<div class=\"col-md-12\">\n  <div class=\"panel panel-primary\">\n    <div class=\"panel-heading\">Lịch sử đơn hàng</div>\n    <div class=\"panel-body\">\n      <table class=\"table table-hover\">\n        <thead>\n          <tr>\n            <th>Ngày tạo</th>\n            <th>Khách hàng</th>\n            <th>Người giúp việc</th>\n            <th>TG làm</th>\n            <th>Chi phí</th>\n            <th>Trạng thái</th>\n            <th></th>\n          </tr>\n        </thead>\n        <tbody>\n          <tr *ngFor=\"let o of orderHistory | paginate: { itemsPerPage: 15, currentPage: p}\">\n            <td>{{o.created_at *1000 |date}}</td>\n            <td>{{o.customer}} - {{o.customer_phone}}</td>\n            <td>{{o.employee}} - {{o.employee_phone}}</td>\n            <td>{{o.hour_day}}</td>\n            <td>{{o.money_day}}</td>\n            <td>{{o.status === 'finished'?'Hoàn thành':'Đang thực hiện'}}</td>\n            <td>\n              <button type=\"button\" class=\"btn btn-primary\" (click)=\"onDetail(o)\">Chi tiết</button>\n            </td>\n          </tr>\n        </tbody>\n      </table>\n      <div class=\"row text-center\">\n        <pagination-controls (pageChange)=\"p = $event\"></pagination-controls>\n      </div>\n    </div>\n  </div>\n</div>\n<p-dialog header=\"Chi tiết thông tin\" [(visible)]=\"displayDetailPopup\" [width]=\"600\">\n  <table class=\"table table-hover\" [hidden]=\"!displayDetailPopup\">\n    <tbody>\n      <tr>\n        <td>Ngày tạo</td>\n        <td>{{selectedOrder?.created_at *1000 |date}}</td>\n      </tr>\n      <tr>\n        <td>Khách hàng</td>\n        <td>{{selectedOrder?.customer}} - {{selectedOrder?.customer_phone}}</td>\n      </tr>\n      <tr>\n        <td>Người giúp việc</td>\n        <td>{{selectedOrder?.employee}} - {{selectedOrder?.employee_phone}}</td>\n      </tr>\n      <tr>\n        <td>Chi phí</td>\n        <td>{{selectedOrder?.money_day}}</td>\n      </tr>\n      <tr>\n        <td>Đánh giá</td>\n        <td>3 sao</td>\n      </tr>\n    </tbody>\n  </table>\n</p-dialog>"
 
 /***/ }),
 
@@ -318,12 +318,17 @@ var OrderComponent = (function () {
         this.manageService = manageService;
         this.p = 1;
         this.orderHistory = [];
+        this.displayDetailPopup = false;
     }
     OrderComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.manageService.getOrderHistory().subscribe(function (res) {
             _this.orderHistory = res;
         });
+    };
+    OrderComponent.prototype.onDetail = function (o) {
+        this.displayDetailPopup = true;
+        this.selectedOrder = o;
     };
     OrderComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
@@ -483,7 +488,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/service/service-frm/service-frm.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"email\">Tên dịch vụ</label>\n    <input type=\"text\" class=\"form-control\" id=\"email\" [(ngModel)]=\"service.name\" name=\"name\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Giá theo giờ</label>\n    <input type=\"number\" class=\"form-control\" id=\"pwd\"  [(ngModel)]=\"service.price_per_hour\" name=\"price_per_hour\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Nhiệm vụ</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n    <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Công cụ</label>\n    <br/>\n    <p-multiSelect [options]=\"displayTool\" [(ngModel)]=\"selectedTool\" name=\"tool\"></p-multiSelect>\n  </div>\n  <button type=\"button\" (click)=\"onSaveService(f)\" class=\"btn btn-primary\">Lưu</button>\n</form>"
+module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"email\">Tên dịch vụ</label>\n    <input type=\"text\" class=\"form-control\" id=\"email\" [(ngModel)]=\"service.name\" name=\"name\">\n  </div>\n  <!-- <div class=\"form-group\">\n    <label for=\"pwd\">Giá theo giờ</label>\n    <input type=\"number\" class=\"form-control\" id=\"pwd\"  [(ngModel)]=\"service.price_per_hour\" name=\"price_per_hour\">\n  </div> -->\n  <div class=\"form-group\">\n    <label for=\"pwd\">Giá theo giờ</label>\n    <input class=\"form-control\" currencyMask [(ngModel)]=\"service.price_per_hour\" [options]=\"{align:'left', suffix: ' VND ', thousands: '.', decimal: ',',precision:0 }\" name=\"price_per_hour\"/>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Nhiệm vụ</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n    <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Công cụ</label>\n    <br/>\n    <p-multiSelect [options]=\"displayTool\" [(ngModel)]=\"selectedTool\" name=\"tool\"></p-multiSelect>\n  </div>\n  <button type=\"button\" (click)=\"onSaveService(f)\" class=\"btn btn-primary\">Lưu</button>\n</form>"
 
 /***/ }),
 
@@ -598,7 +603,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/service/service.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Dịch vụ</div>\n  <div class=\"panel-body\">\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"showCreateForm=!showCreateForm\" *ngIf=\"!showCreateForm\">Thêm mới</button>\n    <app-service-frm  (saveService)=\"onSaveService($event)\" *ngIf=\"showCreateForm\"></app-service-frm>\n    <!-- <form #f2=\"ngForm\" *ngIf=\"showCreateForm\">\n      <div class=\"form-group\">\n        <label for=\"email\">Tên dịch vụ</label>\n        <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Giá theo giờ</label>\n        <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price_per_hour\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Nhiệm vụ</label>\n        <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n        <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Công cụ</label>\n        <br/>\n        <mat-form-field>\n          <mat-select placeholder=\"Chọn công cụ cho dịch vụ\" [formControl]=\"selectedTools\" multiple>\n            <mat-option *ngFor=\"let t of tools\" [value]=\"t\">{{t.name}}</mat-option>\n          </mat-select>\n        </mat-form-field>\n      </div>\n      <button type=\"button\" (click)=\"onCreateService(f2)\" class=\"btn btn-primary\">Thêm dịch vụ</button>\n    </form> -->\n\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Tên dịch vụ</th>\n          <th>Gía theo giờ</th>\n          <th>Công cụ</th>\n          <th>Nhiệm vụ</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of services | paginate: { itemsPerPage: 5, currentPage: pService }\">\n          <td>{{s.name}}</td>\n          <td>{{s.price_per_hour}}</td>\n          <td>\n            <span class=\"badge\" *ngFor=\"let s of s.tools\">{{s}}</span>\n          </td>\n          <td>\n            <span class=\"badge\" *ngFor=\"let n of s.node_services\">{{n}}</span>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"showDialog(s)\">Cập nhật</button>\n            <button class=\"btn btn-danger\" (click)=\"onDeleteService(s.id)\">Xóa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls (pageChange)=\"pService = $event\"></pagination-controls>\n    </div>\n  </div>\n</div>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"display\" [width]=\"600\">\n    <app-service-frm *ngIf=\"display\" [(service)]=\"editService\" (saveService)=\"onSaveService($event)\"></app-service-frm>  \n  <!-- <form>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Tên:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editService.name\" name=\"name\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Giá:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" [(ngModel)]=\"editService.price_per_hour\" name=\"price_per_hour\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Nhiệm vụ</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n      <span class=\"badge\" *ngFor=\"let n of editService.node_services\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n    </div>\n\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdateService(s)\">Sửa thông tin</button>\n  </form> -->\n</p-dialog>"
+module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Dịch vụ</div>\n  <div class=\"panel-body\">\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"showCreateForm=!showCreateForm\" *ngIf=\"!showCreateForm\">Thêm mới</button>\n    <app-service-frm  (saveService)=\"onSaveService($event)\" *ngIf=\"showCreateForm\"></app-service-frm>\n    <!-- <form #f2=\"ngForm\" *ngIf=\"showCreateForm\">\n      <div class=\"form-group\">\n        <label for=\"email\">Tên dịch vụ</label>\n        <input type=\"text\" class=\"form-control\" id=\"email\" ngModel name=\"name\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Giá theo giờ</label>\n        <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"price_per_hour\">\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Nhiệm vụ</label>\n        <input type=\"text\" class=\"form-control\" id=\"pwd\" (keyup.enter)=\"onAddNodeService(node)\" #node placeholder=\"Nhập các viêc phải làm kết thúc bằng cách nhấn enter\">\n        <span class=\"badge\" *ngFor=\"let n of nodeService\" (click)=\"onRemoveNode(n)\" style=\"cursor: pointer;\">{{n}}</span>\n      </div>\n      <div class=\"form-group\">\n        <label for=\"pwd\">Công cụ</label>\n        <br/>\n        <mat-form-field>\n          <mat-select placeholder=\"Chọn công cụ cho dịch vụ\" [formControl]=\"selectedTools\" multiple>\n            <mat-option *ngFor=\"let t of tools\" [value]=\"t\">{{t.name}}</mat-option>\n          </mat-select>\n        </mat-form-field>\n      </div>\n      <button type=\"button\" (click)=\"onCreateService(f2)\" class=\"btn btn-primary\">Thêm dịch vụ</button>\n    </form> -->\n\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Tên dịch vụ</th>\n          <th>Gía theo giờ</th>\n          <th>Công cụ</th>\n          <th>Nhiệm vụ</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of services | paginate: { itemsPerPage: 5, currentPage: pService }\">\n          <td>{{s.name}}</td>\n          <td>{{s.price_per_hour| currency:'VND':'symbol':'4.0-2'}}</td>\n          <td>\n            <span class=\"badge\" *ngFor=\"let s of s.tools\">{{s}}</span>\n          </td>\n          <td>\n            <span class=\"badge\" *ngFor=\"let n of s.node_services\">{{n}}</span>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"showDialog(s)\">Cập nhật</button>\n            <button class=\"btn btn-danger\" (click)=\"onDeleteService(s.id)\">Xóa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls (pageChange)=\"pService = $event\"></pagination-controls>\n    </div>\n  </div>\n</div>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"display\" [width]=\"600\">\n    <app-service-frm *ngIf=\"display\" [(service)]=\"editService\" (saveService)=\"onSaveService($event)\"></app-service-frm>  \n</p-dialog>\n<p-dialog header=\"Thêm mới dịch vụ\" [(visible)]=\"showCreateForm\" [width]=\"600\">\n  <app-service-frm  (saveService)=\"onSaveService($event)\" *ngIf=\"showCreateForm\"></app-service-frm>\n</p-dialog>"
 
 /***/ }),
 
@@ -679,12 +684,6 @@ var ServiceComponent = (function () {
         this.display = true;
         this.editService = s;
     };
-    ServiceComponent.prototype.onUpdateService = function (s) {
-        var _this = this;
-        this.srvService.updateService(s).subscribe(function (res) {
-            _this.display = false;
-        });
-    };
     ServiceComponent.prototype.onSaveService = function ($event) {
         var _this = this;
         if ($event.id) {
@@ -701,7 +700,7 @@ var ServiceComponent = (function () {
                     return _this.tools.find(function (t) { return t.id === e; }).name;
                 });
                 _this.services.push($event);
-                _this.display = false;
+                _this.showCreateForm = false;
             });
         }
     };
@@ -1325,7 +1324,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff-edit/staff-edit.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form #f=\"ngForm\">\n    <div class=\"form-group\">\n      <label for=\"pwd\">Số điện thoại:</label>\n      <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Địa chỉ hiện tại:</label>\n      <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n    </div>\n    <div class=\"form-group\">\n      <label for=\"pwd\">Dịch vụ cung cấp:</label>\n      <select ngModel name=\"service_id\" id=\"service\" class=\"form-control\" required=\"required\">\n        <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n      </select>\n    </div>\n    <input type=\"file\" #avatar (change)=\"onUploadFile(avatar)\" name=\"avatar\" style=\"display:none;\">\n    <input type=\"file\" #certificate (change)=\"onUploadFile(certificate)\" name=\"certificate\" style=\"display:none;\">\n    <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdate(f)\" [disabled]=\"!f.valid && !employee.id\">Cập nhật</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"certificate.click()\" >Upload Chứng chỉ</button>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"avatar.click()\">Upload Avatar</button>\n  </form>"
+module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"pwd\">Số điện thoại:</label>\n    <input type=\"number\" class=\"form-control\" ngModel name=\"phone\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">CMT:</label>\n    <input type=\"text\" class=\"form-control\" ngModel name=\"identity_card\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Địa chỉ hiện tại:</label>\n    <input type=\"text\" class=\"form-control\" ngModel name=\"address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Dịch vụ cung cấp:</label>\n    <select ngModel name=\"service_id\" class=\"form-control\" required=\"required\">\n      <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n    </select>\n  </div>\n  <input type=\"file\" #avatar (change)=\"onUploadFile(avatar)\" name=\"avatar\" style=\"display:none;\">\n  <input type=\"file\" #certificate (change)=\"onUploadFile(certificate)\" name=\"certificate\" style=\"display:none;\">\n  <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onUpdate(f)\" [disabled]=\"!f.valid && !employee.id\">Cập nhật</button>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"certificate.click()\">Upload Chứng chỉ</button>\n  <button type=\"button\" class=\"btn btn-primary\" (click)=\"avatar.click()\">Upload Avatar</button>\n</form>"
 
 /***/ }),
 
@@ -1362,6 +1361,7 @@ var StaffEditComponent = (function () {
         this.srvService = srvService;
         this.userService = userService;
         this.alertService = alertService;
+        this.updateDone = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
     }
     StaffEditComponent.prototype.ngOnInit = function () {
         var _this = this;
@@ -1374,7 +1374,8 @@ var StaffEditComponent = (function () {
             this.f.setValue({
                 phone: this.employee.phone,
                 address: this.employee.address,
-                service_id: this.employee.emp_work.service_id
+                service_id: this.employee.emp_work.service_id,
+                identity_card: this.employee.identity_card
             });
         }
     };
@@ -1384,29 +1385,30 @@ var StaffEditComponent = (function () {
             if (f.name === 'certificate') {
                 _this.userService.uploadCertificate(_this.employee.id, res).subscribe(function (resp) {
                     _this.employee.certificate = res;
+                    _this.updateDone.emit('update-done');
                     _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
                 });
             }
             else {
                 _this.userService.uploadAvatar(_this.employee.id, res).subscribe(function (resp) {
                     _this.employee.avatar = res;
+                    _this.updateDone.emit('update-done');
                     _this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
                 });
             }
         });
-        // this.userService.uploadCertificate(formData, this.employee.id).subscribe(res => {
-        //   this.alertService.success('Thông báo', 'Upload chứng chỉ thành công');
-        // });
     };
     StaffEditComponent.prototype.onUpdate = function (f) {
         var _this = this;
         var value = f.value;
         value.phone = value.phone + '';
         this.employee.address = value.address;
+        this.employee.identity_card = value.identity_card;
         this.employee.phone = value.phone;
         this.employee.emp_work.service_id = value.service_id;
         this.userService.updateEmployee(this.employee).subscribe(function (res) {
             _this.employee = res;
+            _this.updateDone.emit('update-done');
             _this.alertService.success('Thành công', 'Cập nhật thành công');
         });
     };
@@ -1414,6 +1416,10 @@ var StaffEditComponent = (function () {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_4__shared_models_staff_model__["a" /* Employee */])
     ], StaffEditComponent.prototype, "employee", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+        __metadata("design:type", Object)
+    ], StaffEditComponent.prototype, "updateDone", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["ViewChild"])('f'),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_5__angular_forms__["NgForm"])
@@ -1456,7 +1462,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff-frm/staff-frm.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"pwd\">Họ tên:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"full_name\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Mật khẩu:</label>\n    <input type=\"password\" class=\"form-control\" id=\"pwd\" ngModel name=\"password\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Số điện thoại:</label>\n    <input type=\"number\" class=\"form-control\" id=\"pwd\" ngModel name=\"phone\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">CMT:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"identity_card\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Ngày sinh:</label><br/>\n    <p-calendar ngModel name=\"date_of_birth\"  [defaultDate]=\"defaultDate\"  dateFormat=\"dd/mm/yy\" required ></p-calendar>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Địa chỉ hiện tại:</label>\n    <input type=\"text\" class=\"form-control\" id=\"pwd\" ngModel name=\"address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Dịch vụ cung cấp:</label>\n    <select ngModel name=\"service\" id=\"service\" class=\"form-control\" required=\"required\">\n      <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n    </select>\n  </div>\n  <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onAdd(f)\" [disabled]=\"!f.valid && !employee.id\">Thêm mới</button>\n</form>"
+module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label for=\"pwd\">Họ tên:</label>\n    <input type=\"text\" class=\"form-control\"  ngModel name=\"full_name\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Mật khẩu:</label>\n    <input type=\"password\" class=\"form-control\"  ngModel name=\"password\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Số điện thoại:</label>\n    <input type=\"number\" class=\"form-control\"  ngModel name=\"phone\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Email:</label>\n    <input type=\"text\" class=\"form-control\"  ngModel name=\"email\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">CMT:</label>\n    <input type=\"text\" class=\"form-control\"  ngModel name=\"identity_card\" required>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Ngày sinh:</label><br/>\n    <p-calendar ngModel name=\"date_of_birth\"  [defaultDate]=\"defaultDate\"  dateFormat=\"dd/mm/yy\" required ></p-calendar>\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Địa chỉ hiện tại:</label>\n    <input type=\"text\" class=\"form-control\"  ngModel name=\"address\">\n  </div>\n  <div class=\"form-group\">\n    <label for=\"pwd\">Dịch vụ cung cấp:</label>\n    <select ngModel name=\"service\"  class=\"form-control\" required=\"required\">\n      <option [value]=\"s.id\" *ngFor=\"let s of selectService\">{{s.name}}</option>\n    </select>\n  </div>\n  <button type=\"submit\" class=\"btn btn-primary\" (click)=\"onAdd(f)\" [disabled]=\"!f.valid && !employee.id\">Thêm mới</button>\n</form>"
 
 /***/ }),
 
@@ -1470,6 +1476,7 @@ module.exports = "<form #f=\"ngForm\">\n  <div class=\"form-group\">\n    <label
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__common_constant__ = __webpack_require__("../../../../../src/app/common/constant.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__user_service__ = __webpack_require__("../../../../../src/app/manage/user/user.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__shared_alert_service__ = __webpack_require__("../../../../../src/app/shared/alert.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1484,11 +1491,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var StaffFrmComponent = (function () {
     function StaffFrmComponent(srvService, userService, alertService) {
         this.srvService = srvService;
         this.userService = userService;
         this.alertService = alertService;
+        this.addDone = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
         this.defaultDate = new Date(1990, 1, 1, 0, 0, 0, 0);
         this.url = __WEBPACK_IMPORTED_MODULE_2__common_constant__["a" /* ApplicationApiResource */].uploadAvatar + "?access_token=" + sessionStorage.getItem(__WEBPACK_IMPORTED_MODULE_2__common_constant__["b" /* ApplicationStorage */].accessTokenStorage);
         this.employee = {};
@@ -1496,7 +1505,12 @@ var StaffFrmComponent = (function () {
     StaffFrmComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.srvService.getServices().subscribe(function (res) {
-            _this.selectService = res;
+            if (Object(__WEBPACK_IMPORTED_MODULE_5__x_utils__["a" /* checkEmptyObject */])(res)) {
+                _this.selectService = [];
+            }
+            else {
+                _this.selectService = res;
+            }
         });
     };
     StaffFrmComponent.prototype.onThu = function (d) {
@@ -1518,12 +1532,17 @@ var StaffFrmComponent = (function () {
     StaffFrmComponent.prototype.onAdd = function (f) {
         var _this = this;
         var value = f.value;
-        value.phone = value.phone + '';
+        value.phone = '0' + value.phone;
         this.userService.createEmployee(f.value).subscribe(function (res) {
             _this.employee = res;
             _this.alertService.success('Thành công', 'Thêm thành công');
+            _this.addDone.emit(_this.employee);
         });
     };
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+        __metadata("design:type", Object)
+    ], StaffFrmComponent.prototype, "addDone", void 0);
     StaffFrmComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'app-staff-frm',
@@ -1562,7 +1581,7 @@ module.exports = module.exports.toString();
 /***/ "../../../../../src/app/manage/user/staff/staff.component.html":
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người giúp việc</div>\n  <div class=\"panel-body\">\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Họ tên</th>\n          <th>SĐT</th>\n          <th>Ngày sinh</th>\n          <th>Địa chỉ</th>\n          <th>Dịch vụ cung cấp</th>\n          <th>Trạng thái</th>\n          <th>Hành động</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of staffs | paginate: { itemsPerPage: 10, currentPage: p }\">\n          <td>{{s.full_name}}</td>\n          <td>{{s.phone}}</td>\n          <td>{{s.date_of_birth | date: 'dd/MM/yyyy'}}</td>\n          <td>{{s.address}}</td>\n          <td>{{s.service_name}}</td>\n          <td>\n            <app-switch [default]=\"s.is_active\" (change)=\"onChange($event, s)\"></app-switch>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"displayDetail = true;selectedStaff=s\">Chi tiết</button>\n            <button class=\"btn btn-primary\" (click)=\"displayUpdateFrm = true;selectedStaff=s\">Sửa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls previousLabel=\"<\" nextLabel=\">\" (pageChange)=\"p = $event\"></pagination-controls>\n    </div>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"displayAddFrm=true\">Thêm mới</button>\n  </div>\n</div>\n<p-overlayPanel #op>\n  Content\n</p-overlayPanel>\n<p-dialog header=\"Thêm mới thông tin\" [(visible)]=\"displayAddFrm\" [width]=\"600\">\n  <app-staff-frm></app-staff-frm>\n</p-dialog>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"displayUpdateFrm\" [width]=\"600\">\n    <app-staff-edit [employee]=\"selectedStaff\"></app-staff-edit>\n</p-dialog>\n<p-dialog header=\"Chi tiết thông tin\" [(visible)]=\"displayDetail\" [width]=\"600\">\n    <app-staff-detail [employee]=\"selectedStaff\"></app-staff-detail>\n</p-dialog>\n<!-- comment -->\n\n\n<!-- <p-dataList [value]=\"staffs\" [paginator]=\"true\" [rows]=\"5\">\n    <p-header>\n      Danh sách người giúp việc\n    </p-header>\n    <ng-template let-s pTemplate=\"item\">\n      <div class=\"ui-g ui-fluid car-item\">\n        <div class=\"ui-g-12 ui-md-2\" style=\"text-align:center\">\n          <img [src]=\"'http://localhost:8080/static/avatar/'+s.id\" alt=\"No avatar\" (click)=\"showDialog(s)\" width=\"120px\" height=\"120px\">\n          \n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Họ tên: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.full_name}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Ngày sinh: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.date_of_birth | date: 'dd/MM/yyyy'}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">ĐĐ làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.address_work}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Trạng thái: </div>\n            <div class=\"ui-g-8 ui-sm-6\">\n              <p-inputSwitch onLabel=\"Kích hoạt\" offLabel=\"Ngừng kích hoạt\" [(ngModel)]=\"s.is_active\" (onChange)=\"onActive($event, s)\"></p-inputSwitch>\n            </div>\n          </div>\n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian bắt đầu làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.start_time| date: 'dd/MM/yyyy'}}</div>\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian kết thúc: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.end_time|date}}</div>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </p-dataList> -->"
+module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-heading\">Danh sách người giúp việc</div>\n  <div class=\"panel-body\">\n    <table class=\"table table-hover\">\n      <thead>\n        <tr>\n          <th>Họ tên</th>\n          <th>SĐT</th>\n          <th>CMT</th>\n          <th>Ngày sinh</th>\n          <th>Địa chỉ</th>\n          <th>Dịch vụ cung cấp</th>\n          <th>Trạng thái</th>\n          <th>Hành động</th>\n        </tr>\n      </thead>\n      <tbody>\n        <tr *ngFor=\"let s of staffs | paginate: { itemsPerPage: 10, currentPage: p }\">\n          <td>{{s.full_name}}</td>\n          <td>{{s.phone}}</td>\n          <td>{{s.identity_card}}</td>\n          <td>{{s.date_of_birth | date: 'dd/MM/yyyy'}}</td>\n          <td>{{s.address}}</td>\n          <td>{{s.service_name}}</td>\n          <td>\n            <app-switch [default]=\"s.is_active\" (changeValue)=\"onChange($event, s)\"></app-switch>\n          </td>\n          <td>\n            <button class=\"btn btn-primary\" (click)=\"onDetailPopup(s)\">Chi tiết</button>\n            <button class=\"btn btn-primary\" (click)=\"onUpdatePopup(s)\">Sửa</button>\n          </td>\n        </tr>\n      </tbody>\n    </table>\n    <div class=\"row text-center\">\n      <pagination-controls previousLabel=\"<\" nextLabel=\">\" (pageChange)=\"p = $event\"></pagination-controls>\n    </div>\n    <button type=\"button\" class=\"btn btn-primary\" (click)=\"displayAddFrm=true\">Thêm mới</button>\n  </div>\n</div>\n<p-overlayPanel #op>\n  Content\n</p-overlayPanel>\n\n<p-dialog header=\"Thêm mới thông tin\" [(visible)]=\"displayAddFrm\" [width]=\"600\">\n  <app-staff-frm (addDone)=\"onDone($event)\"></app-staff-frm>\n</p-dialog>\n<p-dialog header=\"Cập nhật thông tin\" [(visible)]=\"displayUpdateFrm\" [width]=\"600\">\n    <app-staff-edit [employee]=\"selectedStaff\" (updateDone)=\"onDone($event)\"></app-staff-edit>\n</p-dialog>\n<p-dialog header=\"Chi tiết thông tin\" [(visible)]=\"displayDetail\" [width]=\"600\">\n    <app-staff-detail [employee]=\"selectedStaff\"></app-staff-detail>\n</p-dialog>\n<!-- comment -->\n\n\n<!-- <p-dataList [value]=\"staffs\" [paginator]=\"true\" [rows]=\"5\">\n    <p-header>\n      Danh sách người giúp việc\n    </p-header>\n    <ng-template let-s pTemplate=\"item\">\n      <div class=\"ui-g ui-fluid car-item\">\n        <div class=\"ui-g-12 ui-md-2\" style=\"text-align:center\">\n          <img [src]=\"'http://localhost:8080/static/avatar/'+s.id\" alt=\"No avatar\" (click)=\"showDialog(s)\" width=\"120px\" height=\"120px\">\n          \n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Họ tên: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.full_name}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Ngày sinh: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.date_of_birth | date: 'dd/MM/yyyy'}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">ĐĐ làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.address_work}}</div>\n\n            <div class=\"ui-g-4 ui-sm-6\">Trạng thái: </div>\n            <div class=\"ui-g-8 ui-sm-6\">\n              <p-inputSwitch onLabel=\"Kích hoạt\" offLabel=\"Ngừng kích hoạt\" [(ngModel)]=\"s.is_active\" (onChange)=\"onActive($event, s)\"></p-inputSwitch>\n            </div>\n          </div>\n        </div>\n        <div class=\"ui-g-12 ui-md-5 car-details\">\n          <div class=\"ui-g\">\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian bắt đầu làm: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.start_time| date: 'dd/MM/yyyy'}}</div>\n            <div class=\"ui-g-4 ui-sm-6\">Thời gian kết thúc: </div>\n            <div class=\"ui-g-8 ui-sm-6\">{{s.emp_work.end_time|date}}</div>\n          </div>\n        </div>\n      </div>\n    </ng-template>\n  </p-dataList> -->"
 
 /***/ }),
 
@@ -1571,10 +1590,11 @@ module.exports = "<div class=\"panel panel-primary\">\n  <div class=\"panel-head
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StaffComponent; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__user_service__ = __webpack_require__("../../../../../src/app/manage/user/user.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__service_srv_service__ = __webpack_require__("../../../../../src/app/manage/service/srv.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__common_constant__ = __webpack_require__("../../../../../src/app/common/constant.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__x_utils__ = __webpack_require__("../../../../../src/x/utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("../../../core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__user_service__ = __webpack_require__("../../../../../src/app/manage/user/user.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__service_srv_service__ = __webpack_require__("../../../../../src/app/manage/service/srv.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__common_constant__ = __webpack_require__("../../../../../src/app/common/constant.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1584,6 +1604,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -1602,38 +1623,26 @@ var StaffComponent = (function () {
         this.editEmployee = { emp_work: {} };
         this.selectService = [];
         this.selectedStaff = { emp_work: {} };
-        this.urlUpload = __WEBPACK_IMPORTED_MODULE_3__common_constant__["a" /* ApplicationApiResource */].uploadAvatar;
+        this.urlUpload = __WEBPACK_IMPORTED_MODULE_4__common_constant__["a" /* ApplicationApiResource */].uploadAvatar;
     }
     StaffComponent.prototype.ngOnInit = function () {
         var _this = this;
         this.srvService.getServices().subscribe(function (res) {
-            _this.selectService = res;
+            if (Object(__WEBPACK_IMPORTED_MODULE_0__x_utils__["a" /* checkEmptyObject */])(res)) {
+                _this.selectService = [];
+            }
+            else {
+                _this.selectService = res;
+            }
             _this.userService.getEmployees().subscribe(function (res1) {
                 _this.staffs = res1;
+                console.log(_this.staffs);
                 _this.staffs.map(function (v) {
                     var temp = _this.selectService.find(function (s) { return s.id === v.emp_work.service_id; });
                     v.service_name = temp ? temp.name : '';
                 });
             });
         });
-    };
-    StaffComponent.prototype.onActive = function ($event, s) {
-        if ($event.checked) {
-            this.userService.activeEmployee(s.id).subscribe(function (res) {
-            });
-        }
-        else {
-            this.userService.deactiveEmployee(s.id).subscribe(function (res) {
-            });
-        }
-    };
-    StaffComponent.prototype.onDeactive = function (s) {
-        this.userService.deactiveEmployee(s.id).subscribe(function (res) {
-            s.is_active = false;
-        });
-    };
-    StaffComponent.prototype.onUploadAvatar = function ($event) {
-        console.log($event);
     };
     StaffComponent.prototype.showDialog = function (e) {
         this.displayAddFrm = true;
@@ -1645,8 +1654,13 @@ var StaffComponent = (function () {
             _this.displayAddFrm = false;
         });
     };
-    StaffComponent.prototype.onDetail = function (s) {
+    StaffComponent.prototype.onDetailPopup = function (s) {
         this.selectedStaff = s;
+        this.displayDetail = true;
+    };
+    StaffComponent.prototype.onUpdatePopup = function (s) {
+        this.selectedStaff = s;
+        this.displayUpdateFrm = true;
     };
     StaffComponent.prototype.onChange = function ($event, s) {
         if ($event) {
@@ -1658,14 +1672,23 @@ var StaffComponent = (function () {
             });
         }
     };
+    StaffComponent.prototype.onDone = function ($event) {
+        if ($event === 'update-done') {
+            this.displayUpdateFrm = false;
+        }
+        else {
+            this.displayAddFrm = false;
+            this.staffs.push($event);
+        }
+    };
     StaffComponent = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["Component"])({
             selector: 'app-staff',
             template: __webpack_require__("../../../../../src/app/manage/user/staff/staff.component.html"),
             styles: [__webpack_require__("../../../../../src/app/manage/user/staff/staff.component.css")]
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1__user_service__["a" /* UserService */],
-            __WEBPACK_IMPORTED_MODULE_2__service_srv_service__["a" /* SrvService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__user_service__["a" /* UserService */],
+            __WEBPACK_IMPORTED_MODULE_3__service_srv_service__["a" /* SrvService */]])
     ], StaffComponent);
     return StaffComponent;
 }());
